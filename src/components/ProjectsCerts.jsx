@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
 
 const PROJECTS = [
-    { name: 'BS Computer Science', issuer: 'ICCBI, Balayan Batangas' },
-    { name: 'Front-End Web Development', issuer: 'Self-trained' },
-    { name: 'Adobe Photoshop', issuer: 'Digital Design' },
-    { name: 'Google Workspace', issuer: 'Google' },
+    {
+        name: 'ICCBI Clinic Information System',
+        issuer: 'iccbiclinic.site',
+        href: 'https://iccbiclinic.site',
+    },
 ];
 
 const RECS = [
@@ -87,13 +88,20 @@ export function ProjectsCerts() {
                 </div>
                 <div className="cert-list">
                     {PROJECTS.map((p, i) => (
-                        <div className="cert-row" key={i}>
+                        <a
+                            className="cert-row"
+                            key={i}
+                            href={p.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
                             <div>
                                 <div className="cert-name">{p.name}</div>
                                 <div className="cert-issuer">{p.issuer}</div>
                             </div>
                             <span className="cert-chev"><Chevron /></span>
-                        </div>
+                        </a>
                     ))}
                 </div>
             </div>

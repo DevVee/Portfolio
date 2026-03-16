@@ -31,7 +31,7 @@ export function OJTHighlights() {
         <div className="section reveal" ref={ref}>
             <div className="sec-head">
                 <div className="sec-title">OJT Highlights</div>
-                <span className="sec-badge">Dec 2024 – Apr 2025</span>
+                <span className="sec-badge">2025 – 2026</span>
             </div>
             <div className="projects-grid">
                 {HIGHLIGHTS.map((h, i) => (

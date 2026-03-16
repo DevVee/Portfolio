@@ -19,7 +19,6 @@ export function Gallery() {
         <div className="section reveal" ref={ref}>
             <div className="sec-head">
                 <div className="sec-title">Certifications</div>
-                <span className="sec-badge">Add your photos</span>
             </div>
             <div className="gallery-outer">
                 <div
