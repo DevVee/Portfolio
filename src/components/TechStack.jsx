@@ -3,8 +3,12 @@ import { useReveal } from '../hooks/useReveal';
 
 const STACK = [
     {
-        cat: 'Frontend',
-        tags: ['JavaScript', 'PHP', 'HTML', 'CSS', 'Tailwind CSS', 'Bootstrap'],
+        cat: 'Frontend & Frameworks',
+        tags: ['React.js', 'Next.js', 'TypeScript', 'React Native + Expo', 'JavaScript', 'HTML', 'CSS', 'Tailwind CSS', 'Bootstrap'],
+    },
+    {
+        cat: 'Backend & Cloud',
+        tags: ['Supabase', 'PostgreSQL', 'SQL', 'Resend (Email API)', 'Vercel', 'PHP'],
     },
     {
         cat: 'Design',

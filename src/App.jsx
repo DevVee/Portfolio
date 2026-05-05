@@ -9,6 +9,7 @@ import { ProjectsCerts } from './components/ProjectsCerts';
 import { Gallery } from './components/Gallery';
 import { FooterGrid } from './components/FooterGrid';
 import { Sidebar } from './components/Sidebar';
+import ContactForm from './components/ContactForm';
 
 function App() {
   const { theme, toggle } = useTheme();
@@ -28,6 +29,7 @@ function App() {
             <OJTHighlights />
             <ProjectsCerts />
             <Gallery />
+            <ContactForm />
             <FooterGrid />
           </div>
 

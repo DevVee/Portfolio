@@ -30,7 +30,7 @@ export function ProfileHeader() {
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M22 10v6M2 10l10 5 10-5-10-5-10 5z" />
                     </svg>
-                    BS Computer Science — Expected April 2026 · ICCBI
+                    BS Computer Science — April 2026 · Magna Cum Laude · Immaculate Conception College of Balayan, Inc.
                 </div>
 
                 <div className="action-row">
@@ -46,7 +46,7 @@ export function ProfileHeader() {
                         </svg>
                         +63 916 892 7345
                     </a>
-                    <a href="/princearveeavena_resume.pdf" download className="btn">
+                    <a href="/RESUME.pdf" download className="btn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                             <polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
