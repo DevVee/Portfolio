@@ -61,7 +61,7 @@ export function ContactModal({ onClose }) {
     window.open(`mailto:princearveeavena@gmail.com?subject=${s}&body=${b}`);
   };
 
-  return (
+  return createPortal(
     <div className="cm-overlay" onClick={close}>
       <div className="cm-box" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="cm-title">
 
