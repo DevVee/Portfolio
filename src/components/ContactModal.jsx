@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 
 export function ContactModal({ onClose }) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '', honeypot: '' });
@@ -213,6 +214,7 @@ export function ContactModal({ onClose }) {
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
