@@ -2,13 +2,34 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// In-memory rate limiting (for Vercel, consider using Redis in production)
-const rateLimitMap = new Map();
-const RATE_LIMIT = 3; // 3 emails per IP per hour
-const RATE_LIMIT_WINDOW = 3600000; // 1 hour in milliseconds
+const ALLOWED_ORIGINS = [
+  'https://arveeavena.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:4173',
+];
 
-function sanitizeHtml(text) {
-  return text
+// In-memory rate limit store (resets on cold start — acceptable for serverless)
+const rateLimitStore = new Map();
+const MAX_REQUESTS = 3;
+const WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const record = rateLimitStore.get(ip) ?? [];
+  const recent = record.filter((t) => now - t < WINDOW_MS);
+  if (recent.length >= MAX_REQUESTS) return false;
+  recent.push(now);
+  rateLimitStore.set(ip, recent);
+  return true;
+}
+
+function getIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  return (forwarded ? forwarded.split(',')[0] : req.socket?.remoteAddress ?? 'unknown').trim();
+}
+
+function escapeHtml(str) {
+  return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -16,113 +37,89 @@ function sanitizeHtml(text) {
     .replace(/'/g, '&#x27;');
 }
 
-function validateEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email) && email.length <= 254;
-}
-
-function isRateLimited(ip) {
-  const now = Date.now();
-  const userLimit = rateLimitMap.get(ip);
-
-  if (!userLimit) {
-    rateLimitMap.set(ip, [now]);
-    return false;
-  }
-
-  // Remove old requests outside the window
-  const recentRequests = userLimit.filter((time) => now - time < RATE_LIMIT_WINDOW);
-
-  if (recentRequests.length >= RATE_LIMIT) {
-    return true;
-  }
-
-  recentRequests.push(now);
-  rateLimitMap.set(ip, recentRequests);
-  return false;
-}
-
-function getClientIp(req) {
-  return (
-    req.headers['x-forwarded-for']?.split(',')[0] ||
-    req.headers['x-real-ip'] ||
-    req.socket?.remoteAddress ||
-    'unknown'
-  ).trim();
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
 }
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', process.env.VERCEL_URL || 'http://localhost:5173');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  const origin = req.headers.origin ?? '';
+  const isAllowed = ALLOWED_ORIGINS.includes(origin);
+
+  res.setHeader('Access-Control-Allow-Origin', isAllowed ? origin : ALLOWED_ORIGINS[0]);
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (!isAllowed) return res.status(403).json({ error: 'Forbidden' });
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // Rate limiting
-  const clientIp = getClientIp(req);
-  if (isRateLimited(clientIp)) {
+  const ip = getIp(req);
+  if (!checkRateLimit(ip)) {
     return res.status(429).json({ error: 'Too many requests. Please try again later.' });
   }
 
-  const { name, email, message, honeypot } = req.body;
+  const { name, email, message, honeypot } = req.body ?? {};
 
-  // Honeypot check (spam bot detection)
-  if (honeypot) {
-    return res.status(400).json({ error: 'Invalid submission' });
-  }
+  // Bot trap
+  if (honeypot) return res.status(400).json({ error: 'Invalid request' });
 
-  // Validate required fields
+  // Required field check
   if (!name?.trim() || !email?.trim() || !message?.trim()) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  // Validate input lengths
-  if (name.length > 100 || message.length > 5000 || email.length > 254) {
-    return res.status(400).json({ error: 'Input exceeds maximum length' });
+  // Length limits
+  if (name.length > 100 || email.length > 254 || message.length > 5000) {
+    return res.status(400).json({ error: 'Input exceeds allowed length' });
   }
 
-  // Validate email format
-  if (!validateEmail(email)) {
+  // Email format
+  if (!isValidEmail(email)) {
     return res.status(400).json({ error: 'Invalid email address' });
   }
 
-  // Validate name contains only safe characters
-  if (!/^[a-zA-Z0-9\s\-'.,]+$/.test(name)) {
+  // Name: only safe characters
+  if (!/^[\p{L}\p{N}\s'\-.,]+$/u.test(name.trim())) {
     return res.status(400).json({ error: 'Name contains invalid characters' });
   }
 
-  try {
-    const sanitizedName = sanitizeHtml(name.trim());
-    const sanitizedMessage = sanitizeHtml(message.trim());
-    const sanitizedEmail = email.trim().toLowerCase();
+  const safeName = escapeHtml(name.trim());
+  const safeEmail = email.trim().toLowerCase();
+  const safeMessage = escapeHtml(message.trim()).replace(/\n/g, '<br>');
 
-    const data = await resend.emails.send({
+  try {
+    await resend.emails.send({
       from: 'onboarding@resend.dev',
-      to: 'arveeavena.premium@gmail.com',
-      replyTo: sanitizedEmail,
-      subject: `New message from ${sanitizedName}`,
+      to: 'princearveeavena@gmail.com',
+      replyTo: safeEmail,
+      subject: `Portfolio contact from ${safeName}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px;">
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${sanitizedName}</p>
-          <p><strong>Email:</strong> ${sanitizedEmail}</p>
-          <p><strong>Message:</strong></p>
-          <p>${sanitizedMessage.replace(/\n/g, '<br>')}</p>
+        <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#fafafa;border-radius:12px;border:1px solid #e4e4e7;">
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 24px;color:#18181b;">New message from your portfolio</h2>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr>
+              <td style="padding:10px 0;border-bottom:1px solid #e4e4e7;width:80px;font-size:12px;color:#71717a;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Name</td>
+              <td style="padding:10px 0;border-bottom:1px solid #e4e4e7;font-size:14px;color:#18181b;">${safeName}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 0;border-bottom:1px solid #e4e4e7;font-size:12px;color:#71717a;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Email</td>
+              <td style="padding:10px 0;border-bottom:1px solid #e4e4e7;font-size:14px;color:#18181b;">${safeEmail}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 0;font-size:12px;color:#71717a;font-weight:600;text-transform:uppercase;letter-spacing:.05em;vertical-align:top;">Message</td>
+              <td style="padding:10px 0;font-size:14px;color:#18181b;line-height:1.7;">${safeMessage}</td>
+            </tr>
+          </table>
+          <p style="margin:24px 0 0;font-size:12px;color:#a1a1aa;">Sent via arveeavena.vercel.app · Reply-to is set to the sender's email.</p>
         </div>
       `,
     });
 
     return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+  } catch (err) {
+    console.error('Resend error:', err);
+    return res.status(500).json({ error: 'Failed to send. Please try again later.' });
   }
 }
