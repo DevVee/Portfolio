@@ -1,17 +1,14 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const ALLOWED_ORIGINS = [
   'https://arveeavena.vercel.app',
   'http://localhost:5173',
   'http://localhost:4173',
 ];
 
-// In-memory rate limit store (resets on cold start — acceptable for serverless)
 const rateLimitStore = new Map();
 const MAX_REQUESTS = 3;
-const WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const WINDOW_MS = 60 * 60 * 1000;
 
 function checkRateLimit(ip) {
   const now = Date.now();
@@ -24,8 +21,8 @@ function checkRateLimit(ip) {
 }
 
 function getIp(req) {
-  const forwarded = req.headers['x-forwarded-for'];
-  return (forwarded ? forwarded.split(',')[0] : req.socket?.remoteAddress ?? 'unknown').trim();
+  const fwd = req.headers['x-forwarded-for'];
+  return (fwd ? fwd.split(',')[0] : req.socket?.remoteAddress ?? 'unknown').trim();
 }
 
 function escapeHtml(str) {
@@ -42,22 +39,33 @@ function isValidEmail(email) {
 }
 
 export default async function handler(req, res) {
-  const origin = req.headers.origin ?? '';
-  const isAllowed = ALLOWED_ORIGINS.includes(origin);
-
-  res.setHeader('Access-Control-Allow-Origin', isAllowed ? origin : ALLOWED_ORIGINS[0]);
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
 
+  // CORS — only set header when Origin is present (cross-origin requests)
+  const origin = req.headers.origin ?? '';
+  if (origin) {
+    const allowed = ALLOWED_ORIGINS.includes(origin);
+    res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'null');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (!allowed) return res.status(403).json({ error: 'Forbidden' });
+  }
+
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  if (!isAllowed) return res.status(403).json({ error: 'Forbidden' });
 
+  // Guard: env var must exist — if missing, Resend init throws and crashes the module
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY environment variable is not set');
+    return res.status(500).json({ error: 'Email service is not configured. Please contact the site owner.' });
+  }
+
+  // Rate limiting
   const ip = getIp(req);
   if (!checkRateLimit(ip)) {
-    return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+    return res.status(429).json({ error: 'Too many requests. Please try again in an hour.' });
   }
 
   const { name, email, message, honeypot } = req.body ?? {};
@@ -65,31 +73,34 @@ export default async function handler(req, res) {
   // Bot trap
   if (honeypot) return res.status(400).json({ error: 'Invalid request' });
 
-  // Required field check
+  // Required fields
   if (!name?.trim() || !email?.trim() || !message?.trim()) {
-    return res.status(400).json({ error: 'All fields are required' });
+    return res.status(400).json({ error: 'All fields are required.' });
   }
 
   // Length limits
   if (name.length > 100 || email.length > 254 || message.length > 5000) {
-    return res.status(400).json({ error: 'Input exceeds allowed length' });
+    return res.status(400).json({ error: 'Input exceeds allowed length.' });
   }
 
   // Email format
   if (!isValidEmail(email)) {
-    return res.status(400).json({ error: 'Invalid email address' });
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
 
-  // Name: only safe characters
+  // Name: safe characters only (supports unicode names)
   if (!/^[\p{L}\p{N}\s'\-.,]+$/u.test(name.trim())) {
-    return res.status(400).json({ error: 'Name contains invalid characters' });
+    return res.status(400).json({ error: 'Name contains invalid characters.' });
   }
 
   const safeName = escapeHtml(name.trim());
   const safeEmail = email.trim().toLowerCase();
   const safeMessage = escapeHtml(message.trim()).replace(/\n/g, '<br>');
 
+  // Initialize inside handler — never at module level — so missing key is caught cleanly
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: 'princearveeavena@gmail.com',
@@ -119,7 +130,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('Resend error:', err);
-    return res.status(500).json({ error: 'Failed to send. Please try again later.' });
+    console.error('Resend error:', err?.message ?? err);
+    return res.status(500).json({ error: 'Failed to send your message. Please try again later.' });
   }
 }

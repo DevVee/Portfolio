@@ -39,17 +39,19 @@ export function ContactModal({ onClose }) {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      // Safely parse JSON — Vercel may return HTML on cold-start errors
+      let data = {};
+      try { data = await res.json(); } catch { /* non-JSON response */ }
 
       if (res.ok) {
         setStatus('success');
         setFormData({ name: '', email: '', message: '', honeypot: '' });
         setTimeout(close, 2200);
       } else {
-        setStatus(data.error ?? 'Something went wrong. Try again.');
+        setStatus(data.error ?? 'Something went wrong. Please try again.');
       }
     } catch {
-      setStatus('Network error. Please check your connection.');
+      setStatus('Could not reach the server. Please try again.');
     } finally {
       setLoading(false);
     }

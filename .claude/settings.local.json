@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(npm install *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(mv \"BOOTSTRAP BASICS.png\" \"bootstrap-basics.png\")",
+      "Bash(mv \"BUILD YOUR OWN FIREWALL.png\" \"build-your-own-firewall.png\")",
+      "Bash(mv \"CISCO NETWORKING.png\" \"cisco-networking.png\")",
+      "Bash(mv \"CYBERSECURITY AND IOT IN DIGITAL PLATFORM.png\" \"cybersecurity-iot-digital-platform.png\")",
+      "Bash(mv \"CYBERSECURITY TURNING DATA INTO DEFENSE.png\" \"cybersecurity-data-defense.png\")"
     ]
   }
 }
