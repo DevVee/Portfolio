@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DentCore — Dental Clinic Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        display: ['Sora', 'sans-serif'],
+                    },
+                    colors: {
+                        clinic: {
+                            50: '#f0f7ff',
+                            100: '#e0efff',
+                            200: '#b8d9ff',
+                            300: '#7ab8ff',
+                            400: '#3690f8',
+                            500: '#0d6efd',
+                            600: '#0054d4',
+                            700: '#0042a8',
+                            800: '#003888',
+                            900: '#002f6e',
+                            950: '#001d47',
+                        },
+                        slate: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Sora', sans-serif;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        /* Nav */
+        .nav-link {
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #0d6efd;
+        }
+
+        /* Hero gradient bg */
+        .hero-bg {
+            background: linear-gradient(135deg, #001d47 0%, #003888 40%, #0054d4 75%, #0d6efd 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 70%;
+            height: 130%;
+            background: radial-gradient(ellipse at center, rgba(54, 144, 248, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 50%;
+            height: 80%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Glass card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(16px);
+        }
+
+        /* Dashboard card */
+        .dash-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Feature card hover */
+        .feature-card {
+            transition: transform 0.25s, box-shadow 0.25s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(13, 110, 253, 0.10);
+            border-color: #b8d9ff;
+        }
+
+        /* Tooth grid */
+        .tooth-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e1;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #64748b;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .tooth-btn:hover {
+            background: #e0efff;
+            border-color: #7ab8ff;
+            color: #0054d4;
+        }
+
+        .tooth-btn.selected {
+            background: #0d6efd;
+            border-color: #0054d4;
+            color: #fff;
+        }
+
+        .tooth-btn.treated {
+            background: #dcfce7;
+            border-color: #4ade80;
+            color: #15803d;
+        }
+
+        .tooth-btn.issue {
+            background: #fef2f2;
+            border-color: #f87171;
+            color: #dc2626;
+        }
+
+        /* Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 28px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 24px;
+            bottom: -8px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 16px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #0d6efd;
+            background: #0d6efd;
+        }
+
+        /* Status badge */
+        .badge-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .badge-ongoing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* CTA button */
+        .btn-primary {
+            background: #0d6efd;
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px 28px;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.15s;
+            font-family: 'Sora', sans-serif;
+            font-size: 15px;
+        }
+
+        .btn-primary:hover {
+            background: #0054d4;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 12px 28px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: 'Sora', sans-serif;
+            font-size: 15px;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #fff;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 18px;
+            max-width: 520px;
+            width: 100%;
+            padding: 36px;
+            position: relative;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.22);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.55s ease both;
+        }
+
+        .fade-in-up-d1 {
+            animation: fadeInUp 0.55s 0.15s ease both;
+        }
+
+        .fade-in-up-d2 {
+            animation: fadeInUp 0.55s 0.28s ease both;
+        }
+
+        @keyframes pulse-soft {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.65;
+            }
+        }
+
+        .pulse-live {
+            animation: pulse-soft 2s infinite;
+        }
+
+        /* Section divider */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #0d6efd;
+            font-family: 'Sora', sans-serif;
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Table row hover */
+        .table-row {
+            transition: background 0.15s;
+        }
+
+        .table-row:hover {
+            background: #f0f7ff;
+        }
+
+        /* FAQ */
+        .faq-item {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.2s;
+        }
+
+        .faq-answer.open {
+            max-height: 200px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            background: #1e293b;
+            color: #fff;
+            font-size: 11px;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            transition: opacity 0.18s;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Scrollspy active */
+        .nav-pill.active {
+            background: #e0efff;
+            color: #0054d4;
+        }
+
+        /* Notification toast */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9999;
+            background: #1e293b;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 12px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100"
+        style="box-shadow:0 1px 16px rgba(13,110,253,0.06);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#0d6efd;">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C8 2 5 5.5 5 9c0 2 .7 3.8 1.8 5.2L9 17v3a1 1 0 001 1h4a1 1 0 001-1v-3l2.2-2.8C18.3 12.8 19 11 19 9c0-3.5-3-7-7-7z"
+                            fill="#fff" opacity=".9" />
+                        <path d="M9 17h6M10 20h4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <span class="font-display font-700 text-slate-900" style="font-size:17px;font-weight:700;">Dent<span
+                        style="color:#0d6efd;">Core</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-1">
+                <a href="../index.html"
+                    class="nav-link nav-pill px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 transition-all">← Back to Portfolio</a>
+                <a href="#features"
+                    class="nav-link nav-pill px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 transition-all">Features</a>
+                <a href="#how-it-works"
+                    class="nav-link nav-pill px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 transition-all">How
+                    It Works</a>
+                <a href="#testimonials"
+                    class="nav-link nav-pill px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 transition-all">Testimonials</a>
+                <a href="#faq"
+                    class="nav-link nav-pill px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 transition-all">FAQ</a>
+            </div>
+            <a href="../index.html" class="btn-primary text-sm px-5 py-2.5"
+                style="font-size:13px;padding:10px 20px;">← Back to Portfolio</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero-bg pt-24 pb-16 md:pt-32 md:pb-24 relative"
+        style="min-height:90vh;display:flex;align-items:center;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left -->
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 fade-in-up"
+                        style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);">
+                        <span class="w-2 h-2 rounded-full bg-green-400 pulse-live"></span>
+                        <span class="text-xs font-semibold text-white/90 tracking-wide font-display">CUSTOM-BUILT FOR
+                            DENTAL CLINICS</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-display font-800 text-white leading-tight mb-5 fade-in-up-d1"
+                        style="font-weight:800;line-height:1.15;">
+                        Dental Clinic Management That Actually Works <span style="color:#7ab8ff;">for Your Clinic</span>
+                    </h1>
+                    <p class="text-lg text-white/75 mb-8 leading-relaxed max-w-lg fade-in-up-d2">
+                        Appointments, patient records, treatment tracking, and full clinic workflow automation — all in
+                        one system built specifically for your practice. Not SaaS. Not generic. <strong
+                            class="text-white/90">Yours.</strong>
+                    </p>
+                    <div class="flex flex-wrap gap-3 fade-in-up-d2">
+                        <a href="../index.html" class="btn-primary flex items-center gap-2">
+                            ← Back to Portfolio
+                        </a>
+                    </div>
+                    <!-- Trust pills -->
+                    <div class="flex flex-wrap gap-4 mt-8 fade-in-up-d2">
+                        <div class="flex items-center gap-1.5 text-white/70 text-sm">
+                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            One-time payment
+                        </div>
+                        <div class="flex items-center gap-1.5 text-white/70 text-sm">
+                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            Full installation included
+                        </div>
+                        <div class="flex items-center gap-1.5 text-white/70 text-sm">
+                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            Customized for your workflow
+                        </div>
+                    </div>
+                </div>
+                <!-- Dashboard Mock -->
+                <div class="relative fade-in-up-d2">
+                    <div class="dash-card p-5" style="min-height:380px;">
+                        <!-- Dashboard Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <div class="text-white/50 text-xs font-display font-semibold uppercase tracking-wider">
+                                    Clinic Overview</div>
+                                <div class="text-white font-display font-semibold text-sm mt-0.5">Wednesday, May 7 · Dr.
+                                    Santos</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-400 pulse-live"></div>
+                                <span class="text-white/60 text-xs">Live</span>
+                            </div>
+                        </div>
+                        <!-- Stats Row -->
+                        <div class="grid grid-cols-3 gap-3 mb-4">
+                            <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.09);">
+                                <div class="text-white/55 text-xs mb-1">Today's Appts</div>
+                                <div class="text-white text-2xl font-display font-700">12</div>
+                                <div class="text-green-400 text-xs mt-1">↑ 3 vs yesterday</div>
+                            </div>
+                            <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.09);">
+                                <div class="text-white/55 text-xs mb-1">Patients</div>
+                                <div class="text-white text-2xl font-display font-700">348</div>
+                                <div class="text-blue-300 text-xs mt-1">+6 this week</div>
+                            </div>
+                            <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.09);">
+                                <div class="text-white/55 text-xs mb-1">Pending Bills</div>
+                                <div class="text-white text-2xl font-display font-700">7</div>
+                                <div class="text-yellow-300 text-xs mt-1">₱24,500 total</div>
+                            </div>
+                        </div>
+                        <!-- Appointment list -->
+                        <div class="rounded-xl p-3 mb-3" style="background:rgba(255,255,255,0.07);">
+                            <div
+                                class="text-white/50 text-xs font-semibold mb-2.5 font-display uppercase tracking-wide">
+                                Upcoming Today</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                            style="background:#3690f8;">MM</div>
+                                        <div>
+                                            <div class="text-white text-xs font-semibold">Maria M.</div>
+                                            <div class="text-white/45 text-xs">Cleaning · 9:00 AM</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                                        style="background:rgba(74,222,128,0.2);color:#4ade80;">Confirmed</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                            style="background:#8b5cf6;">JR</div>
+                                        <div>
+                                            <div class="text-white text-xs font-semibold">Juan R.</div>
+                                            <div class="text-white/45 text-xs">Root Canal · 10:30 AM</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                                        style="background:rgba(251,191,36,0.2);color:#fbbf24;">Pending</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                            style="background:#06b6d4;">AL</div>
+                                        <div>
+                                            <div class="text-white text-xs font-semibold">Ana L.</div>
+                                            <div class="text-white/45 text-xs">Filling · 1:00 PM</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
+                                        style="background:rgba(59,130,246,0.2);color:#60a5fa;">Scheduled</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Progress bar -->
+                        <div class="rounded-xl p-3" style="background:rgba(255,255,255,0.07);">
+                            <div class="flex justify-between mb-1.5">
+                                <span class="text-white/50 text-xs">Daily capacity</span>
+                                <span class="text-white/80 text-xs font-semibold">9 / 14 slots</span>
+                            </div>
+                            <div class="h-2 rounded-full" style="background:rgba(255,255,255,0.1);">
+                                <div class="h-2 rounded-full"
+                                    style="width:64%;background:linear-gradient(90deg,#3690f8,#7ab8ff);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Floating badge -->
+                    <div
+                        class="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-xl px-4 py-3 flex items-center gap-2.5 border border-slate-100">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#dcfce7;">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-xs font-semibold text-slate-800 font-display">SMS Reminder Sent</div>
+                            <div class="text-xs text-slate-400">2 patients notified</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <div class="section-label mb-3">System Modules</div>
+                <h2 class="text-3xl md:text-4xl font-display font-800 text-slate-900 mb-4" style="font-weight:800;">
+                    Everything Your Clinic Needs,<br />Built Into One System</h2>
+                <p class="text-slate-500 max-w-xl mx-auto text-lg">Each module is designed around real dental clinic
+                    workflows — not generic templates.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- Feature cards -->
+                <div class="feature-card bg-white rounded-2xl p-6 cursor-pointer"
+                    onclick="showFeatureDetail('appointments')">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:#e0efff;">
+                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="3" stroke="#0d6efd" stroke-width="2" />
+                            <path d="M16 2v4M8 2v4M3 10h18" stroke="#0d6efd" stroke-width="2" stroke-linecap="round" />
+                            <path d="M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01" stroke="#0d6efd" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 text-base mb-2" style="font-weight:700;">Smart
+                        Appointment Scheduling</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Calendar-based booking with conflict detection,
+                        time-slot management, and real-time availability.</p>
+                    <div class="mt-4 text-xs font-semibold text-clinic-500 font-display flex items-center gap-1">View
+                        module <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg></div>
+                </div>
+                <div class="feature-card bg-white rounded-2xl p-6 cursor-pointer"
+                    onclick="showFeatureDetail('records')">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:#f0fdf4;">
+                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <rect x="5" y="2" width="14" height="20" rx="2" stroke="#16a34a" stroke-width="2" />
+                            <path d="M9 7h6M9 11h6M9 15h4" stroke="#16a34a" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 text-base mb-2" style="font-weight:700;">Patient
+                        Records System</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Structured patient profiles with medical history,
+                        allergies, contact info, and visit logs.</p>
+                    <div class="mt-4 text-xs font-semibold text-green-600 font-display flex items-center gap-1">View
+                        module <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg></div>
+                </div>
+                <div class="feature-card bg-white rounded-2xl p-6 cursor-pointer"
+                    onclick="showFeatureDetail('treatment')">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:#fdf4ff;">
+                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <path d="M12 6v12M6 12h12" stroke="#9333ea" stroke-width="2.5" stroke-linecap="round" />
+                            <circle cx="12" cy="12" r="9" stroke="#9333ea" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 text-base mb-2" style="font-weight:700;">Treatment
+                        History Timeline</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Per-patient chronological treatment logs with
+                        procedure notes, dates, and outcomes.</p>
+                    <div class="mt-4 text-xs font-semibold text-purple-600 font-display flex items-center gap-1">View
+                        module <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg></div>
+                </div>
+                <div class="feature-card bg-white rounded-2xl p-6 cursor-pointer">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:#fff7ed;">
+                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <ellipse cx="12" cy="14" rx="7" ry="5" stroke="#ea580c" stroke-width="2" />
+                            <path d="M9 9c0-1.657 1.343-3 3-3s3 1.343 3 3" stroke="#ea580c" stroke-width="2" />
+                            <path d="M12 6V3M9 9l-2-1M15 9l2-1" stroke="#ea580c" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 text-base mb-2" style="font-weight:700;">Dental
+                        Chart System</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Interactive tooth diagram with per-tooth treatment
+                        tagging, status tracking, and notes.</p>
+                </div>
+                <div class="feature-card bg-white rounded-2xl p-6 cursor-pointer"
+                    onclick="showFeatureDetail('billing')">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:#fefce8;">
+                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <path d="M9 14l2 2 4-4" stroke="#ca8a04" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <rect x="3" y="3" width="18" height="18" rx="3" stroke="#ca8a04" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 text-base mb-2" style="font-weight:700;">Billing &
+                        Invoice Tracking</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Generate invoices, track payments, manage balances
+                        — all tied to patient records.</p>
+                    <div class="mt-4 text-xs font-semibold text-yellow-600 font-display flex items-center gap-1">View
+                        module <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg></div>
+                </div>
+                <div class="feature-card bg-white rounded-2xl p-6 cursor-pointer" onclick="showFeatureDetail('sms')">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:#ecfdf5;">
+                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#059669"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 text-base mb-2" style="font-weight:700;">SMS
+                        Reminder System</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Automated appointment reminders via SMS to reduce
+                        no-shows and keep patients on schedule.</p>
+                    <div class="mt-4 text-xs font-semibold text-emerald-600 font-display flex items-center gap-1">View
+                        module <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg></div>
+                </div>
+                <div class="feature-card bg-white rounded-2xl p-6 cursor-pointer" onclick="showFeatureDetail('staff')">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:#eff6ff;">
+                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <circle cx="9" cy="7" r="4" stroke="#2563eb" stroke-width="2" />
+                            <path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke="#2563eb" stroke-width="2"
+                                stroke-linecap="round" />
+                            <path d="M19 8v6M22 11h-6" stroke="#2563eb" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 text-base mb-2" style="font-weight:700;">Staff &
+                        Dentist Management</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Manage schedules, assign roles, and track dentist
+                        workload across your clinic team.</p>
+                    <div class="mt-4 text-xs font-semibold text-blue-600 font-display flex items-center gap-1">View
+                        module <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg></div>
+                </div>
+                <div class="feature-card bg-white rounded-2xl p-6"
+                    style="background:linear-gradient(135deg,#001d47,#0054d4);border-color:transparent;">
+                    <div class="text-white/60 text-xs font-display font-semibold uppercase tracking-wider mb-3">Why not
+                        SaaS?</div>
+                    <p class="text-white text-sm leading-relaxed mb-4">You own your data. No monthly fees. No internet
+                        dependency. <span class="text-blue-200 font-semibold">Runs locally on your clinic's
+                            network.</span></p>
+                    <button onclick="openModal('whyNotSaasModal')"
+                        class="text-xs font-semibold text-blue-300 font-display flex items-center gap-1 hover:text-white transition-colors">
+                        Learn more <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PATIENT TABLE -->
+    <section class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+                <div>
+                    <div class="section-label mb-2">Live Patient View</div>
+                    <h2 class="text-2xl font-display font-700 text-slate-900" style="font-weight:700;">Patient &
+                        Treatment Records</h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="patientSearch" oninput="filterTable()" type="text" placeholder="Search patient..."
+                        class="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-clinic-400 focus:ring-2 focus:ring-clinic-100"
+                        style="min-width:180px;" />
+                    <select id="statusFilter" onchange="filterTable()"
+                        class="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-clinic-400">
+                        <option value="">All Status</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Ongoing">Ongoing</option>
+                    </select>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden"
+                style="box-shadow:0 4px 24px rgba(0,0,0,0.05);">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm" style="min-width:580px;">
+                        <thead>
+                            <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+                                <th
+                                    class="text-left px-5 py-3.5 text-xs font-display font-700 text-slate-400 uppercase tracking-wide">
+                                    Patient</th>
+                                <th
+                                    class="text-left px-5 py-3.5 text-xs font-display font-700 text-slate-400 uppercase tracking-wide">
+                                    Procedure</th>
+                                <th
+                                    class="text-left px-5 py-3.5 text-xs font-display font-700 text-slate-400 uppercase tracking-wide">
+                                    Dentist</th>
+                                <th
+                                    class="text-left px-5 py-3.5 text-xs font-display font-700 text-slate-400 uppercase tracking-wide">
+                                    Date</th>
+                                <th
+                                    class="text-left px-5 py-3.5 text-xs font-display font-700 text-slate-400 uppercase tracking-wide">
+                                    Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="section-label mb-3">Process</div>
+            <h2 class="text-3xl font-display font-800 text-slate-900 mb-4" style="font-weight:800;">How You Get This
+                System</h2>
+            <p class="text-slate-500 mb-14 max-w-lg mx-auto">You don't configure anything. I handle the entire setup —
+                built and installed specifically for your clinic.</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="relative">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+                        style="background:linear-gradient(135deg,#e0efff,#b8d9ff);">
+                        <span class="text-2xl font-display font-800 text-clinic-600" style="font-weight:800;">1</span>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 mb-2" style="font-weight:700;">I Customize It</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">We discuss your clinic's workflow, staff, and
+                        requirements. I configure the system to match exactly how you work.</p>
+                    <div class="hidden md:block absolute top-7 left-full w-full h-0.5"
+                        style="background:linear-gradient(90deg,#b8d9ff,transparent);transform:scaleX(0.5);transform-origin:left;">
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+                        style="background:linear-gradient(135deg,#b8d9ff,#7ab8ff);">
+                        <span class="text-2xl font-display font-800 text-clinic-600" style="font-weight:800;">2</span>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 mb-2" style="font-weight:700;">I Install & Configure
+                    </h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">I install the system on your clinic's network or
+                        device, import existing patient data if available, and do full testing.</p>
+                    <div class="hidden md:block absolute top-7 left-full w-full h-0.5"
+                        style="background:linear-gradient(90deg,#7ab8ff,transparent);transform:scaleX(0.5);transform-origin:left;">
+                    </div>
+                </div>
+                <div>
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+                        style="background:linear-gradient(135deg,#7ab8ff,#3690f8);">
+                        <span class="text-2xl font-display font-800 text-white" style="font-weight:800;">3</span>
+                    </div>
+                    <h3 class="font-display font-700 text-slate-800 mb-2" style="font-weight:700;">You Start Managing
+                    </h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Staff training included. Your clinic runs on
+                        DentCore from day one. I stay available for support and updates.</p>
+                </div>
+            </div>
+            <div class="mt-12">
+                <a href="../index.html" class="btn-primary inline-flex items-center gap-2">
+                    ← Back to Portfolio
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section class="py-16" style="background:#f0f7ff;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="section-label mb-3">Who It's For</div>
+            <h2 class="text-2xl font-display font-700 text-slate-900 mb-8" style="font-weight:700;">Designed for These
+                Clinics</h2>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="bg-white rounded-2xl px-6 py-5 border border-slate-100 flex items-center gap-3"
+                    style="box-shadow:0 2px 12px rgba(13,110,253,0.06);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#e0efff;">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="#0d6efd"
+                                stroke-width="2" />
+                            <path d="M9 22V12h6v10" stroke="#0d6efd" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <span class="font-display font-600 text-slate-700" style="font-weight:600;">General Dental
+                        Clinics</span>
+                </div>
+                <div class="bg-white rounded-2xl px-6 py-5 border border-slate-100 flex items-center gap-3"
+                    style="box-shadow:0 2px 12px rgba(13,110,253,0.06);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#fdf4ff;">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9" stroke="#9333ea" stroke-width="2" />
+                            <path d="M12 8v4l3 3" stroke="#9333ea" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <span class="font-display font-600 text-slate-700" style="font-weight:600;">Orthodontic
+                        Clinics</span>
+                </div>
+                <div class="bg-white rounded-2xl px-6 py-5 border border-slate-100 flex items-center gap-3"
+                    style="box-shadow:0 2px 12px rgba(13,110,253,0.06);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#f0fdf4;">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="3" stroke="#16a34a" stroke-width="2" />
+                            <path d="M8 12h8M12 8v8" stroke="#16a34a" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <span class="font-display font-600 text-slate-700" style="font-weight:600;">Small & Mid-Size
+                        Practices</span>
+                </div>
+                <div class="bg-white rounded-2xl px-6 py-5 border border-slate-100 flex items-center gap-3"
+                    style="box-shadow:0 2px 12px rgba(13,110,253,0.06);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#fff7ed;">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="#ea580c" stroke-width="2" />
+                            <circle cx="9" cy="7" r="4" stroke="#ea580c" stroke-width="2" />
+                            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="#ea580c" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <span class="font-display font-600 text-slate-700" style="font-weight:600;">Multi-Dentist
+                        Setups</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="section-label mb-3">From the Field</div>
+                <h2 class="text-3xl font-display font-700 text-slate-900" style="font-weight:700;">What Clinic Staff
+                    Actually Say</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                    <div class="flex items-center gap-1 mb-4">
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-5">"I can pull up any patient's complete history
+                        in seconds. Before this, we were digging through physical folders. Night and day difference."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm"
+                            style="background:#0d6efd;">DS</div>
+                        <div>
+                            <div class="font-display font-600 text-slate-800 text-sm" style="font-weight:600;">Dr.
+                                Santos</div>
+                            <div class="text-slate-400 text-xs">General Dentist · Quezon City</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                    <div class="flex items-center gap-1 mb-4">
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-5">"The booking system is exactly what we
+                        needed. Patients stopped calling to check their schedule — they get a text reminder 3 days
+                        before. Our no-shows dropped a lot."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm"
+                            style="background:#8b5cf6;">CL</div>
+                        <div>
+                            <div class="font-display font-600 text-slate-800 text-sm" style="font-weight:600;">Czarina
+                                L.</div>
+                            <div class="text-slate-400 text-xs">Clinic Assistant · Makati</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                    <div class="flex items-center gap-1 mb-4">
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path
+                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-5">"The dental chart is genuinely useful. I can
+                        see at a glance which teeth have been treated, what's pending. Even the billing is linked. Worth
+                        every peso."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm"
+                            style="background:#0891b2;">RM</div>
+                        <div>
+                            <div class="font-display font-600 text-slate-800 text-sm" style="font-weight:600;">Dr.
+                                Reyes-Miranda</div>
+                            <div class="text-slate-400 text-xs">Orthodontist · Cebu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE -->
+    <section class="py-16" style="background:linear-gradient(135deg,#001d47 0%,#003888 50%,#0054d4 100%);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-display font-800 text-white mb-3" style="font-weight:800;">Why Choose DentCore
+                </h2>
+                <p class="text-blue-200 max-w-md mx-auto">Not a subscription. Not a template. A system built for your
+                    clinic, by a developer who understands clinical workflows.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="glass-card rounded-2xl p-5 text-center">
+                    <div class="text-3xl font-display font-800 text-white mb-2" style="font-weight:800;">₱0</div>
+                    <div class="text-blue-200 text-sm font-semibold mb-1">Monthly Fees</div>
+                    <div class="text-blue-300/70 text-xs">One-time payment. You own it forever.</div>
+                </div>
+                <div class="glass-card rounded-2xl p-5 text-center">
+                    <div class="text-3xl font-display font-800 text-white mb-2" style="font-weight:800;">100%</div>
+                    <div class="text-blue-200 text-sm font-semibold mb-1">Custom-Built</div>
+                    <div class="text-blue-300/70 text-xs">Configured around your actual workflow.</div>
+                </div>
+                <div class="glass-card rounded-2xl p-5 text-center">
+                    <div class="text-3xl font-display font-800 text-white mb-2" style="font-weight:800;">Local</div>
+                    <div class="text-blue-200 text-sm font-semibold mb-1">Setup & Support</div>
+                    <div class="text-blue-300/70 text-xs">Installed on-site. I handle everything.</div>
+                </div>
+                <div class="glass-card rounded-2xl p-5 text-center">
+                    <div class="text-3xl font-display font-800 text-white mb-2" style="font-weight:800;">Easy</div>
+                    <div class="text-blue-200 text-sm font-semibold mb-1">Staff Training</div>
+                    <div class="text-blue-300/70 text-xs">Your team is comfortable in hours, not weeks.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 bg-white">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="section-label mb-3">Questions</div>
+                <h2 class="text-3xl font-display font-700 text-slate-900" style="font-weight:700;">Frequently Asked</h2>
+            </div>
+            <div class="space-y-0 divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden">
+                <div class="faq-item">
+                    <button class="w-full text-left px-6 py-5 flex items-center justify-between group"
+                        onclick="toggleFaq(0)">
+                        <span class="font-display font-600 text-slate-800 text-sm pr-4" style="font-weight:600;">Can I
+                            track individual patient treatments and history?</span>
+                        <svg id="faq-icon-0" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                            class="flex-shrink-0 text-slate-400 transition-transform">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer" id="faq-0">
+                        <div class="px-6 pb-5 text-slate-500 text-sm leading-relaxed">Yes. Every patient has a dedicated
+                            record with a full treatment timeline — procedures, dates, dentist notes, and follow-up
+                            schedule. You can see the complete history at a glance.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="w-full text-left px-6 py-5 flex items-center justify-between group"
+                        onclick="toggleFaq(1)">
+                        <span class="font-display font-600 text-slate-800 text-sm pr-4" style="font-weight:600;">Is it
+                            easy for clinic staff to use without IT knowledge?</span>
+                        <svg id="faq-icon-1" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                            class="flex-shrink-0 text-slate-400 transition-transform">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer" id="faq-1">
+                        <div class="px-6 pb-5 text-slate-500 text-sm leading-relaxed">Absolutely. The interface was
+                            designed specifically for front-desk staff and dental assistants — not software engineers.
+                            Training is included, and most staff are confident within 1–2 hours of use.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="w-full text-left px-6 py-5 flex items-center justify-between group"
+                        onclick="toggleFaq(2)">
+                        <span class="font-display font-600 text-slate-800 text-sm pr-4" style="font-weight:600;">Can it
+                            be accessed on mobile or tablets?</span>
+                        <svg id="faq-icon-2" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                            class="flex-shrink-0 text-slate-400 transition-transform">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer" id="faq-2">
+                        <div class="px-6 pb-5 text-slate-500 text-sm leading-relaxed">Yes. The system is responsive and
+                            works on desktop, tablet, and mobile. Dentists can review patient records on a tablet
+                            chairside. Front desk staff can manage bookings on any device connected to your clinic
+                            network.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="w-full text-left px-6 py-5 flex items-center justify-between group"
+                        onclick="toggleFaq(3)">
+                        <span class="font-display font-600 text-slate-800 text-sm pr-4" style="font-weight:600;">Do you
+                            handle the installation yourself?</span>
+                        <svg id="faq-icon-3" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                            class="flex-shrink-0 text-slate-400 transition-transform">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer" id="faq-3">
+                        <div class="px-6 pb-5 text-slate-500 text-sm leading-relaxed">Yes, fully. You don't need to set
+                            up anything. I visit your clinic (or handle it remotely), install and configure the system,
+                            import any existing data, and walk your team through everything before I leave.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="w-full text-left px-6 py-5 flex items-center justify-between group"
+                        onclick="toggleFaq(4)">
+                        <span class="font-display font-600 text-slate-800 text-sm pr-4" style="font-weight:600;">What
+                            happens if I need updates or support later?</span>
+                        <svg id="faq-icon-4" width="18" height="18" fill="none" viewBox="0 0 24 24"
+                            class="flex-shrink-0 text-slate-400 transition-transform">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <div class="faq-answer" id="faq-4">
+                        <div class="px-6 pb-5 text-slate-500 text-sm leading-relaxed">Post-installation support is
+                            available. Minor fixes and questions are handled at no additional cost. Larger feature
+                            additions or customizations are quoted separately at a fair rate. You'll always have direct
+                            access to me — not a support ticket system.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="py-24 hero-bg relative">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
+                style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);">
+                <span class="text-xs font-semibold text-white/90 tracking-wide font-display">READY TO UPGRADE YOUR
+                    CLINIC?</span>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-display font-800 text-white mb-5"
+                style="font-weight:800;line-height:1.15;">Upgrade Your Dental<br />Clinic Today</h2>
+            <p class="text-blue-200 text-lg mb-10 max-w-xl mx-auto">Get a system that's built around how your clinic
+                actually works — not a generic solution you have to adapt to.</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="../index.html" class="btn-primary inline-flex items-center gap-2 text-base px-8 py-4">
+                    ← Back to Portfolio
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 py-10">
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:#0d6efd;">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C8 2 5 5.5 5 9c0 2 .7 3.8 1.8 5.2L9 17v3a1 1 0 001 1h4a1 1 0 001-1v-3l2.2-2.8C18.3 12.8 19 11 19 9c0-3.5-3-7-7-7z"
+                            fill="#fff" opacity=".9" />
+                    </svg>
+                </div>
+                <span class="font-display font-700 text-white" style="font-weight:700;">Dent<span
+                        style="color:#7ab8ff;">Core</span></span>
+            </div>
+            <div class="text-slate-400 text-sm">Custom-built dental clinic management system · Not SaaS · Your data,
+                your clinic.</div>
+            <div class="flex gap-4">
+                <button onclick="scrollToSection('features')"
+                    class="text-slate-500 text-sm hover:text-slate-300 transition-colors">Features</button>
+                <button onclick="scrollToSection('faq')"
+                    class="text-slate-500 text-sm hover:text-slate-300 transition-colors">FAQ</button>
+                <a href="../index.html"
+                    class="text-slate-500 text-sm hover:text-slate-300 transition-colors">← Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- MODALS -->
+
+    <!-- Why Not SaaS Modal -->
+    <div id="whyNotSaasModal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event,'whyNotSaasModal')">
+        <div class="modal-box">
+            <button onclick="closeModal('whyNotSaasModal')"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+            <h3 class="font-display font-700 text-slate-900 text-xl mb-3" style="font-weight:700;">Why Not SaaS?</h3>
+            <div class="space-y-3 text-sm text-slate-600 leading-relaxed">
+                <p>Most clinic software charges ₱500–₱3,000 per month — forever. Over 3 years, that's ₱18,000–₱108,000
+                    for software you don't own and can't customize.</p>
+                <p>DentCore is a <strong class="text-slate-800">one-time investment</strong>. You own the system. Your
+                    patient data stays on your own machine — not on someone else's server.</p>
+                <p>There's no subscription to cancel, no price increases, and no risk of the service shutting down. It
+                    runs locally on your clinic network whether or not the internet is working.</p>
+                <p class="font-semibold text-slate-800">You get a system that's yours — configured for your workflow,
+                    installed by me, and supported directly.</p>
+            </div>
+            <button onclick="closeModal('whyNotSaasModal')"
+                class="mt-6 w-full border border-slate-200 rounded-lg py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Got
+                it</button>
+        </div>
+    </div>
+
+    <!-- Feature Detail Modal -->
+    <div id="featureDetailModal" class="modal-overlay hidden" onclick="closeModalOnOverlay(event,'featureDetailModal')">
+        <div class="modal-box">
+            <button onclick="closeModal('featureDetailModal')"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+            <div id="featureDetailContent"></div>
+            <button onclick="closeModal('featureDetailModal')"
+                class="mt-5 w-full border border-slate-200 rounded-lg py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Close</button>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="toast">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+            <path d="M5 13l4 4L19 7" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script>
+        // ========== DATA ==========
+        const patients = [
+            { name: 'Maria Santos', procedure: 'Cleaning', dentist: 'Dr. Reyes', date: 'May 3', status: 'Completed' },
+            { name: 'Juan dela Cruz', procedure: 'Root Canal', dentist: 'Dr. Santos', date: 'May 5', status: 'Ongoing' },
+            { name: 'Ana Lim', procedure: 'Filling', dentist: 'Dr. Santos', date: 'May 6', status: 'Pending' },
+            { name: 'Robert Tan', procedure: 'Extraction', dentist: 'Dr. Reyes', date: 'Apr 28', status: 'Completed' },
+            { name: 'Carla Mendoza', procedure: 'Whitening', dentist: 'Dr. Santos', date: 'May 7', status: 'Pending' },
+            { name: 'Mike Villanueva', procedure: 'Cleaning', dentist: 'Dr. Reyes', date: 'Apr 22', status: 'Completed' },
+            { name: 'Lena Ramos', procedure: 'Orthodontics', dentist: 'Dr. Miranda', date: 'May 1', status: 'Ongoing' },
+        ];
+
+        const featureDetails = {
+            appointments: {
+                icon: '📅',
+                title: 'Smart Appointment Scheduling',
+                content: `<ul class="space-y-2 text-sm text-slate-600 list-disc pl-4"><li>Calendar view with day/week/month modes</li><li>Real-time slot availability detection</li><li>Conflict alerts when double-booking</li><li>Assign appointments to specific dentists</li><li>Reschedule and cancellation tracking</li><li>Automated SMS reminder triggers</li></ul>`
+            },
+            records: {
+                icon: '📋',
+                title: 'Patient Records System',
+                content: `<ul class="space-y-2 text-sm text-slate-600 list-disc pl-4"><li>Structured patient profiles with photo</li><li>Medical history and allergy flags</li><li>Emergency contact information</li><li>Per-visit notes and dentist observations</li><li>Search by name, date, or procedure</li><li>Exportable patient summaries</li></ul>`
+            },
+            treatment: {
+                icon: '🩺',
+                title: 'Treatment History Timeline',
+                content: `<ul class="space-y-2 text-sm text-slate-600 list-disc pl-4"><li>Chronological per-patient treatment log</li><li>Procedure type, date, dentist assigned</li><li>Status: pending / completed / ongoing</li><li>Linked to dental chart and billing</li><li>Notes and follow-up reminders</li><li>Printable treatment summary</li></ul>`
+            },
+            billing: {
+                icon: '💳',
+                title: 'Billing & Invoice Tracking',
+                content: `<ul class="space-y-2 text-sm text-slate-600 list-disc pl-4"><li>Auto-generate invoice per treatment</li><li>Track paid, partially paid, and unpaid</li><li>Outstanding balance alerts per patient</li><li>Payment method logging (cash, GCash, etc.)</li><li>Printable official receipts</li><li>Monthly revenue summary report</li></ul>`
+            },
+            sms: {
+                icon: '📩',
+                title: 'SMS Reminder System',
+                content: `<ul class="space-y-2 text-sm text-slate-600 list-disc pl-4"><li>Auto-send reminders before appointments</li><li>Configurable lead time (1 day, 3 days)</li><li>Custom message templates per clinic</li><li>Delivery confirmation tracking</li><li>Supports Globe and Smart numbers</li><li>Reduces no-show rates significantly</li></ul>`
+            },
+            staff: {
+                icon: '👥',
+                title: 'Staff & Dentist Management',
+                content: `<ul class="space-y-2 text-sm text-slate-600 list-disc pl-4"><li>Staff profiles with roles (dentist, assistant, front desk)</li><li>Individual dentist schedules and days off</li><li>Appointment workload per dentist</li><li>Access level control per staff role</li><li>Login audit trail</li><li>Staff attendance logging (optional)</li></ul>`
+            }
+        };
+
+        // ========== TABLE ==========
+        function renderTable(data) {
+            const tbody = document.getElementById('patientTableBody');
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 text-sm">No patients found.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.map(p => `
+    <tr class="table-row border-b border-slate-50" onclick="showToast('Opening record for ${p.name}...')">
+      <td class="px-5 py-3.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style="background:${avatarColor(p.name)};">${p.name.split(' ').map(n => n[0]).join('').slice(0, 2)}</div>
+          <span class="font-medium text-slate-800 text-sm">${p.name}</span>
+        </div>
+      </td>
+      <td class="px-5 py-3.5 text-slate-600 text-sm">${p.procedure}</td>
+      <td class="px-5 py-3.5 text-slate-500 text-sm">${p.dentist}</td>
+      <td class="px-5 py-3.5 text-slate-400 text-sm">${p.date}</td>
+      <td class="px-5 py-3.5"><span class="px-2.5 py-1 rounded-full text-xs font-semibold badge-${p.status.toLowerCase()}">${p.status}</span></td>
+    </tr>
+  `).join('');
+        }
+        function avatarColor(name) {
+            const colors = ['#0d6efd', '#8b5cf6', '#0891b2', '#059669', '#ea580c', '#dc2626', '#ca8a04'];
+            return colors[name.charCodeAt(0) % colors.length];
+        }
+        function filterTable() {
+            const q = document.getElementById('patientSearch').value.toLowerCase();
+            const s = document.getElementById('statusFilter').value;
+            const filtered = patients.filter(p =>
+                p.name.toLowerCase().includes(q) &&
+                (s === '' || p.status === s)
+            );
+            renderTable(filtered);
+        }
+        renderTable(patients);
+
+
+        // ========== MODALS ==========
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = ''; }
+        function closeModalOnOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+        // ========== FEATURE DETAIL ==========
+        function showFeatureDetail(key) {
+            const d = featureDetails[key];
+            if (!d) return;
+            document.getElementById('featureDetailContent').innerHTML = `
+    <div class="text-3xl mb-3">${d.icon}</div>
+    <h3 class="font-display font-700 text-slate-900 text-xl mb-3" style="font-weight:700;">${d.title}</h3>
+    <p class="text-slate-500 text-sm mb-4">What's included in this module:</p>
+    ${d.content}
+  `;
+            openModal('featureDetailModal');
+        }
+
+        // ========== TOAST ==========
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3200);
+        }
+
+        // ========== FAQ ==========
+        function toggleFaq(i) {
+            const el = document.getElementById(`faq-${i}`);
+            const icon = document.getElementById(`faq-icon-${i}`);
+            const isOpen = el.classList.contains('open');
+            // Close all
+            document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+            document.querySelectorAll('[id^=faq-icon-]').forEach(ic => ic.style.transform = '');
+            if (!isOpen) {
+                el.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // ========== SCROLL ==========
+        function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+    </script>
+</body>
+
+</html>

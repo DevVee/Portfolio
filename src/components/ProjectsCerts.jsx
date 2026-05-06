@@ -3,9 +3,24 @@ import { useReveal } from '../hooks/useReveal';
 
 const PROJECTS = [
     {
-        name: 'ICCBI Clinic Information System',
-        issuer: 'iccbiclinic.site',
-        href: 'https://iccbiclinic.site',
+        name: 'DentCore — Dental Clinic Management System',
+        issuer: 'Custom-built dental clinic system',
+        href: 'projects/dental_system.html',
+    },
+    {
+        name: 'SmartPOS — Inventory & Point-of-Sale System',
+        issuer: 'Custom-built POS for retail & mini-mart',
+        href: 'projects/POS_System.html',
+    },
+    {
+        name: 'Appointly — Appointment Management System',
+        issuer: 'Custom scheduling platform for businesses',
+        href: 'projects/appointment_system.html',
+    },
+    {
+        name: 'ClinicOS — Smart Clinic Management System',
+        issuer: 'Custom-built system for Philippine clinics',
+        href: 'projects/clinic_system.html',
     },
 ];
 
@@ -92,8 +107,6 @@ export function ProjectsCerts() {
                             className="cert-row"
                             key={i}
                             href={p.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
                             style={{ textDecoration: 'none', color: 'inherit' }}
                         >
                             <div>
