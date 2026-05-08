@@ -9,7 +9,8 @@
       "Bash(mv \"CYBERSECURITY AND IOT IN DIGITAL PLATFORM.png\" \"cybersecurity-iot-digital-platform.png\")",
       "Bash(mv \"CYBERSECURITY TURNING DATA INTO DEFENSE.png\" \"cybersecurity-data-defense.png\")",
       "Bash(python3 -c ' *)",
-      "Bash(python3)"
+      "Bash(python3)",
+      "Bash(dir \"c:\\\\MyProjects\\\\Portfolio\\\\public\" /b)"
     ]
   }
 }

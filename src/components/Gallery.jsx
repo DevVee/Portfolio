@@ -27,29 +27,47 @@ const CERTS = [
     { name: 'Certificate of Participation',                 file: 'certificate-of-participation-8.png' },
 ];
 
-const VISIBLE = 5;
-const MAX_OFFSET = Math.max(0, CERTS.length - VISIBLE);
+const GAP = 8;
+
+function getVisible() {
+    if (typeof window === 'undefined') return 5;
+    if (window.innerWidth <= 480) return 2;
+    if (window.innerWidth <= 768) return 3;
+    return 5;
+}
 
 export function Gallery() {
     const [offset, setOffset] = useState(0);
     const [preview, setPreview] = useState(null);
+    const [visible, setVisible] = useState(() => getVisible());
     const ref = useReveal();
     const intervalRef = useRef(null);
+
+    const maxOffset = Math.max(0, CERTS.length - visible);
+
+    // Keep offset in bounds when visible count changes
+    useEffect(() => {
+        setOffset(o => Math.min(o, Math.max(0, CERTS.length - visible)));
+    }, [visible]);
+
+    useEffect(() => {
+        const onResize = () => setVisible(getVisible());
+        window.addEventListener('resize', onResize, { passive: true });
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const startAutoSlide = useCallback(() => {
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
-            setOffset(o => (o >= MAX_OFFSET ? 0 : o + 1));
+            setOffset(o => (o >= maxOffset ? 0 : o + 1));
         }, 2800);
-    }, []);
+    }, [maxOffset]);
 
-    // Auto-slide on mount, clean up on unmount
     useEffect(() => {
         startAutoSlide();
         return () => clearInterval(intervalRef.current);
     }, [startAutoSlide]);
 
-    // Pause auto-slide on manual nav, then resume
     const prev = useCallback(() => {
         clearInterval(intervalRef.current);
         setOffset(o => Math.max(0, o - 1));
@@ -58,9 +76,23 @@ export function Gallery() {
 
     const next = useCallback(() => {
         clearInterval(intervalRef.current);
-        setOffset(o => (o >= MAX_OFFSET ? 0 : o + 1));
+        setOffset(o => (o >= maxOffset ? 0 : o + 1));
         startAutoSlide();
-    }, [startAutoSlide]);
+    }, [startAutoSlide, maxOffset]);
+
+    // item width = (100% - (visible-1)*gap) / visible
+    // step       = item_width + gap = (100% + gap) / visible
+    const itemWidthPct  = 100 / visible;
+    const itemGapShare  = (GAP * (visible - 1)) / visible;  // gap subtracted per item
+    const stepGapShare  = GAP / visible;                     // gap added per step
+
+    const itemStyle = {
+        minWidth: `calc(${itemWidthPct}% - ${itemGapShare.toFixed(3)}px)`,
+    };
+
+    const trackStyle = {
+        transform: `translateX(calc(-${offset} * (${itemWidthPct}% + ${stepGapShare.toFixed(3)}px)))`,
+    };
 
     return (
         <div className="section reveal" ref={ref}>
@@ -70,18 +102,15 @@ export function Gallery() {
             </div>
 
             <div className="gallery-outer">
-                <div
-                    className="gallery-track"
-                    style={{ transform: `translateX(calc(-${offset} * (20% - 6.4px + 8px)))` }}
-                >
+                <div className="gallery-track" style={trackStyle}>
                     {CERTS.map((cert, i) => (
                         <button
                             key={i}
                             className="gallery-item"
+                            style={itemStyle}
                             onClick={() => setPreview(cert)}
                             title={cert.name}
                             aria-label={`View ${cert.name}`}
-                            style={{ border: 'none', padding: 0, cursor: 'pointer', background: 'none' }}
                         >
                             <img src={`/certificates/${cert.file}`} alt={cert.name} />
                         </button>
@@ -127,7 +156,7 @@ function CertPreview({ cert, onClose }) {
             >
                 <div className="cert-preview-header">
                     <span className="cert-preview-title">{cert.name}</span>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
                         <a
                             href={`/certificates/${cert.file}`}
                             download

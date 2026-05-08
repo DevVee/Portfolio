@@ -1,1268 +1,1722 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPOS — Inventory & Point of Sale System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        display: ['Outfit', 'sans-serif'],
-                        body: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f0fdf6',
-                            100: '#dcfce9',
-                            200: '#bbf7d2',
-                            300: '#86efad',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
-                        },
-                        ocean: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        }
-                    },
-                    animation: {
-                        'float': 'float 4s ease-in-out infinite',
-                        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
-                        'slide-up': 'slideUp 0.5s ease-out',
-                        'fade-in': 'fadeIn 0.4s ease-out',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-8px)' },
-                        },
-                        'pulse-soft': {
-                            '0%, 100%': { opacity: '1' },
-                            '50%': { opacity: '0.7' },
-                        },
-                        slideUp: {
-                            'from': { transform: 'translateY(20px)', opacity: '0' },
-                            'to': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        fadeIn: {
-                            'from': { opacity: '0' },
-                            'to': { opacity: '1' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartPOS — Inventory & Point of Sale for Local Businesses</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-50: #f9f9f8;
+      --gray-100: #f2f2f0;
+      --gray-200: #e5e5e2;
+      --gray-300: #d1d1cd;
+      --gray-400: #a8a8a2;
+      --gray-500: #737370;
+      --gray-600: #525250;
+      --gray-700: #3a3a38;
+      --gray-800: #242422;
+      --gray-900: #131312;
+      --green: #1a7a4a;
+      --green-light: #e8f5ee;
+      --green-mid: #2d9e62;
+      --green-dark: #0f5233;
+      --ink: #1a1a18;
+      --surface: #ffffff;
+      --surface-raised: #fafaf9;
+      --border: #e5e5e2;
+      --border-strong: #d1d1cd;
+      --text: #1a1a18;
+      --text-muted: #737370;
+      --text-faint: #a8a8a2;
+      --accent: #1a7a4a;
+      --accent-bg: #e8f5ee;
+      --mono: 'Geist Mono', monospace;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8fafc;
-            font-size: 16px;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
+    html { scroll-behavior: smooth; font-size: 16px; }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            font-family: 'Outfit', sans-serif;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
+    body {
+      font-family: 'Geist', -apple-system, sans-serif;
+      background: var(--gray-50);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
-        .gradient-hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #15803d 100%);
-        }
+    /* ─── TYPOGRAPHY ─── */
+    .t-display {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
 
-        .gradient-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(34, 197, 94, 0.08));
-        }
+    .t-heading {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
 
-        .glass {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
+    .t-subheading {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
 
-        .glass-light {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-        }
+    .t-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
 
-        .card-hover {
-            transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-        }
+    .t-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
 
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-        }
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(249, 249, 248, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.4s ease;
-        }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
 
-        .btn-primary:hover::after {
-            left: 100%;
-        }
+    .nav-logo-mark {
+      width: 28px; height: 28px;
+      background: var(--ink);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
-        }
+    .nav-logo-mark svg { width: 16px; height: 16px; }
 
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+    .nav-logo-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
 
-        .btn-secondary {
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            transition: all 0.2s ease;
-        }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.7);
-            transform: translateY(-2px);
-        }
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
 
-        .nav-link {
-            position: relative;
-            transition: color 0.2s;
-        }
+    .nav-links a:hover { color: var(--ink); }
 
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #22c55e, #3b82f6);
-            transition: width 0.3s ease;
-        }
+    .nav-cta {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--white) !important;
+      background: var(--ink);
+      padding: 7px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.15s, opacity 0.15s;
+    }
 
-        .nav-link:hover::after {
-            width: 100%;
-        }
+    .nav-cta:hover { opacity: 0.85; }
 
-        /* POS styles */
-        .product-btn {
-            transition: all 0.18s ease;
-            cursor: pointer;
-        }
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+      align-items: center;
+    }
 
-        .product-btn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        }
+    .hero-left { padding-right: 64px; }
 
-        .product-btn:active {
-            transform: scale(0.97);
-        }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-bg);
+      border: 1px solid #c3e8d3;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
 
-        .cart-item-enter {
-            animation: slideUp 0.3s ease-out;
-        }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
 
-        /* Badge pulse */
-        .badge-low {
-            animation: pulse-soft 2s ease-in-out infinite;
-        }
+    .hero-title {
+      font-size: clamp(2.6rem, 4.5vw, 3.8rem);
+      font-weight: 500;
+      line-height: 1.06;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
 
-        /* FAQ accordion */
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.3s ease;
-        }
+    .hero-title em {
+      font-style: normal;
+      color: var(--green-mid);
+    }
 
-        .faq-answer.open {
-            max-height: 300px;
-        }
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 440px;
+      margin-bottom: 36px;
+    }
 
-        /* Modal */
-        .modal-overlay {
-            animation: fadeIn 0.2s ease-out;
-        }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 52px;
+    }
 
-        .modal-box {
-            animation: slideUp 0.3s ease-out;
-        }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
 
-        /* Mesh BG for sections */
-        .mesh-bg {
-            background: radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.07) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(34, 197, 94, 0.07) 0%, transparent 60%);
-        }
+    .btn-primary:hover { opacity: 0.82; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 400;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      border: 1px solid var(--border-strong);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
+    .btn-ghost:hover { border-color: var(--gray-400); color: var(--ink); }
 
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 3px;
-        }
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+    }
 
-        .hero-stat {
-            animation: float 4s ease-in-out infinite;
-        }
+    .hero-meta-item { }
 
-        .hero-stat:nth-child(2) {
-            animation-delay: 0.8s;
-        }
+    .hero-meta-num {
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 3px;
+    }
 
-        .hero-stat:nth-child(3) {
-            animation-delay: 1.6s;
-        }
+    .hero-meta-label {
+      font-size: 0.78rem;
+      color: var(--text-faint);
+      line-height: 1;
+    }
 
-        /* Tag chip */
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(59, 130, 246, 0.12));
-            border: 1px solid rgba(34, 197, 94, 0.25);
-            color: #15803d;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            padding: 4px 12px;
-            border-radius: 999px;
-        }
+    /* ─── HERO DASHBOARD ─── */
+    .hero-right { position: relative; }
 
-        /* Toast */
-        #toast {
-            transition: all 0.3s ease;
-        }
+    .dashboard-shell {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
+    }
 
-        .step-line {
-            background: linear-gradient(180deg, #22c55e, #3b82f6);
-        }
+    .dash-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--gray-50);
+    }
 
-        @media (max-width: 640px) {
-            .hero-float-card {
-                display: none;
-            }
-        }
-    </style>
+    .dash-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .dash-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--gray-200);
+    }
+
+    .dash-title {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--text-faint);
+      letter-spacing: 0.05em;
+    }
+
+    .dash-live {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+    }
+
+    .dash-live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .dash-body { padding: 16px; }
+
+    .dash-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .dash-stat {
+      background: var(--gray-50);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .dash-stat-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .dash-stat-value {
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .dash-stat-sub {
+      font-size: 0.65rem;
+      color: var(--text-faint);
+    }
+
+    .dash-stat-sub.up { color: #1a7a4a; }
+    .dash-stat-sub.warn { color: #a16207; }
+
+    .dash-chart-box {
+      background: var(--gray-50);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .dash-chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .dash-chart-title {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-faint);
+    }
+
+    .dash-chart-total {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .dash-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 48px;
+    }
+
+    .dash-bar {
+      flex: 1;
+      background: var(--gray-200);
+      border-radius: 2px 2px 0 0;
+      transition: background 0.2s;
+    }
+
+    .dash-bar.today { background: var(--green-mid); }
+
+    .dash-days {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .dash-day-label {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      color: var(--text-faint);
+      flex: 1;
+      text-align: center;
+    }
+
+    .dash-day-label.today { color: var(--accent); font-weight: 500; }
+
+    .dash-transactions {
+      background: var(--gray-50);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .dash-tx-header {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-faint);
+    }
+
+    .dash-tx-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dash-tx-row:last-child { border-bottom: none; }
+
+    .dash-tx-left { display: flex; align-items: center; gap: 8px; }
+
+    .dash-tx-icon {
+      width: 24px; height: 24px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .dash-tx-icon.sale { background: #e8f5ee; }
+    .dash-tx-icon.warn { background: #fef3c7; }
+
+    .dash-tx-name {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .dash-tx-time {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text-faint);
+    }
+
+    .dash-tx-amount {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    .dash-tx-amount.pos { color: var(--accent); }
+    .dash-tx-amount.neg { color: #92400e; }
+
+    /* ─── SECTION WRAPPER ─── */
+    .section { padding: 100px 24px; }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 64px;
+    }
+
+    .section-header-split {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 64px;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ─── USE CASE STRIP ─── */
+    .use-strip {
+      padding: 0 24px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .use-strip-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .use-strip-inner::-webkit-scrollbar { display: none; }
+
+    .use-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      padding: 16px 20px 16px 0;
+      flex-shrink: 0;
+    }
+
+    .use-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 20px;
+      border-left: 1px solid var(--border);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .use-item-icon { font-size: 14px; }
+
+    .use-item-text {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* ─── FEATURES ─── */
+    .features-bg {
+      background: var(--white);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .feature-cell {
+      padding: 28px 24px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .feature-cell:hover { background: var(--gray-50); }
+
+    .feature-cell:nth-child(4n) { border-right: none; }
+    .feature-cell:nth-last-child(-n+4) { border-bottom: none; }
+
+    .feature-icon {
+      width: 32px; height: 32px;
+      margin-bottom: 14px;
+      color: var(--text-muted);
+    }
+
+    .feature-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .feature-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ─── BENEFITS / SPLIT ─── */
+    .benefits-bg { background: var(--gray-50); }
+
+    .benefits-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .benefits-list { display: flex; flex-direction: column; gap: 0; }
+
+    .benefit-row {
+      display: flex;
+      gap: 16px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .benefit-row:first-child { border-top: 1px solid var(--border); }
+
+    .benefit-num {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      padding-top: 2px;
+      flex-shrink: 0;
+      width: 20px;
+    }
+
+    .benefit-text { }
+
+    .benefit-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .benefit-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-faint);
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-bg { background: var(--white); }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .step-cell {
+      padding: 36px 32px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .step-cell:last-child { border-right: none; }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text-faint);
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
+    }
+
+    .step-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials-bg { background: var(--gray-50); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .testimonial-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .testimonial-stars {
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      font-family: var(--mono);
+    }
+
+    .testimonial-quote {
+      font-size: 0.875rem;
+      color: var(--ink);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .testimonial-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .testimonial-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .testimonial-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 1px;
+    }
+
+    .testimonial-biz {
+      font-size: 0.72rem;
+      color: var(--text-faint);
+    }
+
+    /* ─── WHY SECTION ─── */
+    .why-bg { background: var(--ink); }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .why-cell {
+      padding: 32px 28px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .why-cell:last-child { border-right: none; }
+
+    .why-icon-box {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .why-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 8px;
+    }
+
+    .why-desc {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.42);
+      line-height: 1.65;
+    }
+
+    /* ─── FAQ ─── */
+    .faq-bg { background: var(--white); }
+
+    .faq-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .faq-left { }
+
+    .faq-left-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .faq-left-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .faq-list { display: flex; flex-direction: column; }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+
+    .faq-btn {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .faq-q {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    .faq-chevron {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      color: var(--text-faint);
+      transition: transform 0.2s;
+      margin-top: 2px;
+    }
+
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-answer {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.28s ease;
+    }
+
+    .faq-item.open .faq-answer { max-height: 200px; }
+
+    .faq-answer-inner {
+      padding-bottom: 18px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      padding: 100px 24px;
+      background: var(--gray-50);
+      border-top: 1px solid var(--border);
+    }
+
+    .cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .cta-left-kicker {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+      margin-bottom: 16px;
+    }
+
+    .cta-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .cta-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .cta-checks {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cta-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .check-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .cta-right {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
+    }
+
+    .cta-card-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .cta-card-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .cta-contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cta-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      text-decoration: none;
+      transition: border-color 0.15s;
+    }
+
+    .cta-link:hover { border-color: var(--gray-400); }
+
+    .cta-link-icon {
+      width: 28px; height: 28px;
+      border-radius: 5px;
+      background: var(--gray-50);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cta-link-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .cta-link-detail {
+      font-size: 0.75rem;
+      color: var(--text-faint);
+      margin-left: auto;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-faint);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--text-faint);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ─── MOBILE ─── */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 5px 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    #mobile-nav {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 8px 0;
+    }
+
+    #mobile-nav.open { display: flex; }
+
+    #mobile-nav a {
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: flex; align-items: center; }
+      .hero { grid-template-columns: 1fr; padding-top: 80px; gap: 40px; }
+      .hero-left { padding-right: 0; }
+      .hero-right { display: none; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .feature-cell:nth-child(2n) { border-right: none; }
+      .feature-cell:nth-child(4n) { border-right: 1px solid var(--border); }
+      .feature-cell:nth-last-child(-n+4) { border-bottom: 1px solid var(--border); }
+      .feature-cell:nth-last-child(-n+2) { border-bottom: none; }
+      .benefits-split { grid-template-columns: 1fr; gap: 48px; }
+      .steps-row { grid-template-columns: 1fr; }
+      .step-cell { border-right: none; border-bottom: 1px solid var(--border); }
+      .step-cell:last-child { border-bottom: none; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .why-cell:nth-child(2) { border-right: none; }
+      .why-cell:nth-child(3) { border-top: 1px solid rgba(255,255,255,0.1); }
+      .why-cell:nth-child(4) { border-right: none; border-top: 1px solid rgba(255,255,255,0.1); }
+      .faq-layout { grid-template-columns: 1fr; gap: 40px; }
+      .cta-inner { grid-template-columns: 1fr; gap: 40px; }
+      .section-header-split { flex-direction: column; gap: 24px; }
+    }
+
+    @media (max-width: 560px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-cell { border-right: none; }
+      .why-grid { grid-template-columns: 1fr; }
+      .why-cell { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
+<body>
 
-<body class="overflow-x-hidden">
+<!-- ═══ NAV ═══ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">
+        <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5">
+          <rect x="2" y="3" width="5" height="5" rx="1"/>
+          <rect x="9" y="3" width="5" height="5" rx="1"/>
+          <rect x="2" y="10" width="5" height="5" rx="1"/>
+          <rect x="9" y="10" width="5" height="5" rx="1"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">SmartPOS</span>
+    </a>
 
-    <!-- ===== NAVIGATION ===== -->
-    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style="background: transparent;">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #22c55e, #3b82f6);">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-3M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M9 7h6m-3 4v4m-2-2h4" />
-                        </svg>
-                    </div>
-                    <span class="font-display font-bold text-xl text-white" style="letter-spacing:-0.03em;">Smart<span
-                            style="color:#4ade80;">POS</span></span>
-                </div>
-                <!-- Desktop Nav -->
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="../index.html" class="nav-link text-white/80 hover:text-white text-sm font-medium">← Back to Portfolio</a>
-                    <a href="#features" class="nav-link text-white/80 hover:text-white text-sm font-medium">Features</a>
-                    <a href="#benefits" class="nav-link text-white/80 hover:text-white text-sm font-medium">Benefits</a>
-                    <a href="#testimonials"
-                        class="nav-link text-white/80 hover:text-white text-sm font-medium">Testimonials</a>
-                    <a href="#faq" class="nav-link text-white/80 hover:text-white text-sm font-medium">FAQ</a>
-                    <a href="../index.html" class="btn-primary text-white text-sm font-semibold px-5 py-2 rounded-full">← Back to Portfolio</a>
-                </div>
-                <!-- Mobile hamburger -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-white p-2">
-                    <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#testimonials">Clients</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a class="nav-cta" href="#contact">Get a quote</a></li>
+    </ul>
+
+    <button class="mobile-menu-btn" onclick="toggleMobile()" aria-label="Menu">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M2 4h12M2 8h12M2 12h12"/>
+      </svg>
+    </button>
+  </div>
+  <div id="mobile-nav">
+    <a href="#features" onclick="closeMobile()">Features</a>
+    <a href="#how" onclick="closeMobile()">How it works</a>
+    <a href="#testimonials" onclick="closeMobile()">Clients</a>
+    <a href="#faq" onclick="closeMobile()">FAQ</a>
+    <a href="#contact" onclick="closeMobile()" style="color: var(--ink); font-weight: 500;">Get a quote →</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section style="background: var(--white); border-bottom: 1px solid var(--border);">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Ready to deploy</div>
+      <h1 class="hero-title">
+        Inventory &amp; POS<br>
+        for your <em>local</em><br>
+        business
+      </h1>
+      <p class="hero-sub">
+        A custom-built system for mini marts, water stations, and retail shops. One-time cost, works offline, set up in a day.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">
+          Get a quote
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+        </a>
+        <a href="#features" class="btn-ghost">See features</a>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="hero-meta-num">50+</div>
+          <div class="hero-meta-label">Businesses running it</div>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden glass-light border-t border-white/20">
-            <div class="px-4 py-4 flex flex-col gap-3">
-                <a href="#features" onclick="closeMobileMenu()"
-                    class="text-gray-700 font-medium py-2 border-b border-gray-100">Features</a>
-                <a href="#benefits" onclick="closeMobileMenu()"
-                    class="text-gray-700 font-medium py-2 border-b border-gray-100">Benefits</a>
-                <a href="#testimonials" onclick="closeMobileMenu()"
-                    class="text-gray-700 font-medium py-2 border-b border-gray-100">Testimonials</a>
-                <a href="#faq" onclick="closeMobileMenu()"
-                    class="text-gray-700 font-medium py-2 border-b border-gray-100">FAQ</a>
-                <a href="../index.html" onclick="closeMobileMenu()"
-                    class="btn-primary text-white text-center font-semibold px-5 py-3 rounded-full mt-2">← Back to Portfolio</a>
-            </div>
+        <div class="hero-meta-item" style="padding-left:32px; border-left: 1px solid var(--border);">
+          <div class="hero-meta-num">1 day</div>
+          <div class="hero-meta-label">Average setup time</div>
         </div>
-    </nav>
-
-    <!-- ===== HERO ===== -->
-    <section class="gradient-hero min-h-screen flex flex-col justify-center relative overflow-hidden pt-16" id="home">
-        <!-- BG decoration -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full"
-                style="background: radial-gradient(circle, rgba(34,197,94,0.15), transparent 70%);"></div>
-            <div class="absolute bottom-0 -left-40 w-80 h-80 rounded-full"
-                style="background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%);"></div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-5">
-                <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                    <defs>
-                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5" />
-                        </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grid)" />
-                </svg>
-            </div>
+        <div class="hero-meta-item" style="padding-left:32px; border-left: 1px solid var(--border);">
+          <div class="hero-meta-num">₱0/mo</div>
+          <div class="hero-meta-label">No subscriptions</div>
         </div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <!-- Left: Copy -->
-                <div class="text-center lg:text-left">
-                    <div class="chip mb-6 inline-flex">⚡ Ready-to-deploy custom solution</div>
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-white leading-tight mb-6"
-                        style="letter-spacing:-0.03em;">
-                        Smart Inventory<br>&amp; <span
-                            style="background: linear-gradient(135deg, #4ade80, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">POS
-                            System</span><br>for Your Business
-                    </h1>
-                    <p class="text-base text-blue-100/75 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                        A fully customizable, ready-made inventory and point-of-sale system built specifically for your
-                        mini mart, water station, or retail shop. One-time setup. Zero monthly fees.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="../index.html"
-                            class="btn-primary text-white font-bold px-8 py-4 rounded-2xl text-base flex items-center justify-center gap-2 shadow-lg">
-                            ← Back to Portfolio
-                        </a>
-                    </div>
-                    <!-- Stats -->
-                    <div class="flex flex-wrap justify-center lg:justify-start gap-6 mt-12">
-                        <div class="text-center">
-                            <div class="text-3xl font-display font-bold text-white">50+</div>
-                            <div class="text-sm text-blue-200/70">Businesses Served</div>
-                        </div>
-                        <div class="w-px bg-white/20"></div>
-                        <div class="text-center">
-                            <div class="text-3xl font-display font-bold text-white">99%</div>
-                            <div class="text-sm text-blue-200/70">Client Satisfaction</div>
-                        </div>
-                        <div class="w-px bg-white/20"></div>
-                        <div class="text-center">
-                            <div class="text-3xl font-display font-bold text-white">1-Day</div>
-                            <div class="text-sm text-blue-200/70">Setup Time</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Dashboard Mockup -->
-                <div class="relative flex justify-center lg:justify-end">
-                    <!-- Main dashboard card -->
-                    <div class="glass rounded-3xl p-5 w-full max-w-lg shadow-2xl"
-                        style="border: 1px solid rgba(255,255,255,0.2);">
-                        <!-- Top bar -->
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <div class="text-xs text-white/50 font-medium">DASHBOARD OVERVIEW</div>
-                                <div class="text-white font-display font-bold text-lg">Juan's Mini Mart</div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 rounded-full bg-green-400 animate-ping"
-                                    style="animation-duration:2s;"></div>
-                                <span class="text-xs text-green-300 font-medium">Live</span>
-                            </div>
-                        </div>
-                        <!-- Stats row -->
-                        <div class="grid grid-cols-3 gap-3 mb-4">
-                            <div class="glass rounded-xl p-3 hero-stat">
-                                <div class="text-xs text-white/50 mb-1">Today's Sales</div>
-                                <div class="text-xl font-display font-bold text-white">₱8,240</div>
-                                <div class="text-xs text-green-400">↑ 12% vs yesterday</div>
-                            </div>
-                            <div class="glass rounded-xl p-3 hero-stat">
-                                <div class="text-xs text-white/50 mb-1">Transactions</div>
-                                <div class="text-xl font-display font-bold text-white">134</div>
-                                <div class="text-xs text-blue-300">↑ 8 this hour</div>
-                            </div>
-                            <div class="glass rounded-xl p-3 hero-stat">
-                                <div class="text-xs text-white/50 mb-1">Low Stock</div>
-                                <div class="text-xl font-display font-bold text-yellow-300">4</div>
-                                <div class="text-xs text-yellow-300/70">items to reorder</div>
-                            </div>
-                        </div>
-                        <!-- Chart bars -->
-                        <div class="glass rounded-xl p-3 mb-3">
-                            <div class="text-xs text-white/50 mb-3 font-medium">WEEKLY SALES</div>
-                            <div class="flex items-end gap-2 h-16">
-                                <div class="flex-1 rounded-t-md bg-blue-400/40" style="height:45%"></div>
-                                <div class="flex-1 rounded-t-md bg-blue-400/40" style="height:60%"></div>
-                                <div class="flex-1 rounded-t-md bg-blue-400/40" style="height:40%"></div>
-                                <div class="flex-1 rounded-t-md bg-blue-400/60" style="height:75%"></div>
-                                <div class="flex-1 rounded-t-md bg-blue-400/40" style="height:55%"></div>
-                                <div class="flex-1 rounded-t-md bg-blue-400/40" style="height:70%"></div>
-                                <div class="flex-1 rounded-t-md"
-                                    style="height:88%; background: linear-gradient(180deg, #4ade80, #22c55e);"></div>
-                            </div>
-                            <div class="flex justify-between text-xs text-white/30 mt-1">
-                                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                            </div>
-                        </div>
-                        <!-- Recent transactions -->
-                        <div class="glass rounded-xl p-3">
-                            <div class="text-xs text-white/50 mb-2 font-medium">RECENT TRANSACTIONS</div>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-center">
-                                    <div class="flex items-center gap-2">
-                                        <div
-                                            class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
-                                            <svg class="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                                <path
-                                                    d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
-                                            </svg></div><span class="text-xs text-white/70">POS Sale</span>
-                                    </div>
-                                    <span class="text-xs font-bold text-green-400">+₱145.00</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <div class="flex items-center gap-2">
-                                        <div
-                                            class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                            <svg class="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                                <path
-                                                    d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
-                                            </svg></div><span class="text-xs text-white/70">POS Sale</span>
-                                    </div>
-                                    <span class="text-xs font-bold text-green-400">+₱89.50</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <div class="flex items-center gap-2">
-                                        <div
-                                            class="w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                                            <svg class="w-3 h-3 text-yellow-400" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                            </svg></div><span class="text-xs text-yellow-300/80">Low Stock Alert</span>
-                                    </div>
-                                    <span class="text-xs font-medium text-yellow-300">Rice — 3 sacks</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Floating cards (hidden on mobile) -->
-                    <div class="hero-float-card absolute -left-8 top-1/4 glass rounded-2xl p-3 shadow-xl"
-                        style="min-width:140px;">
-                        <div class="flex items-center gap-2 mb-1">
-                            <div class="w-5 h-5 rounded-full bg-green-400/20 flex items-center justify-center"><svg
-                                    class="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg></div>
-                            <span class="text-xs text-green-300 font-semibold">Sale Complete</span>
-                        </div>
-                        <div class="text-white font-bold text-sm">₱247.00</div>
-                        <div class="text-xs text-white/40">Receipt printed ✓</div>
-                    </div>
-
-                    <div class="hero-float-card absolute -right-4 bottom-1/4 glass rounded-2xl p-3 shadow-xl"
-                        style="min-width:130px;">
-                        <div class="text-xs text-white/50 mb-1">Stock Level</div>
-                        <div class="text-white font-bold font-display">Coca-Cola</div>
-                        <div class="flex items-center gap-2 mt-1">
-                            <div class="flex-1 h-1.5 rounded-full bg-white/10">
-                                <div class="h-full rounded-full bg-green-400" style="width:70%"></div>
-                            </div>
-                            <span class="text-xs text-green-300">70%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Wave divider -->
-        <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
-                class="w-full h-16">
-                <path d="M0,80 C360,20 1080,60 1440,20 L1440,80 Z" fill="#f8fafc" />
-            </svg>
-        </div>
-    </section>
-
-    <!-- ===== USE CASES STRIP ===== -->
-    <section class="py-8 bg-white border-b border-gray-100">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-12">
-                <span class="text-sm text-gray-400 font-medium uppercase tracking-widest">Perfect for</span>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100">
-                        <span class="text-xl">🏪</span><span class="text-sm font-semibold text-blue-700">Mini
-                            Mart</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 border border-green-100">
-                        <span class="text-xl">💧</span><span class="text-sm font-semibold text-green-700">Water
-                            Station</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-50 border border-purple-100">
-                        <span class="text-xl">🛍️</span><span class="text-sm font-semibold text-purple-700">Retail
-                            Shop</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-100">
-                        <span class="text-xl">🥬</span><span class="text-sm font-semibold text-orange-700">Grocery
-                            Store</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FEATURES ===== -->
-    <section id="features" class="py-20 mesh-bg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <div class="chip mb-4 inline-flex">Everything you need</div>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-gray-900 mb-4">Packed with powerful features
-                </h2>
-                <p class="text-gray-500 max-w-xl mx-auto text-base">Everything your business needs, built into one clean
-                    system. No complexity, no learning curve.</p>
-            </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                <!-- Feature cards -->
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">Real-Time Inventory</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Track every product in real-time. Know exactly
-                        what's in stock without manual counting.</p>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">POS Checkout</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Fast, intuitive point-of-sale interface. Process
-                        transactions in seconds with any device.</p>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">Barcode Support</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Scan products instantly with any USB or wireless
-                        barcode scanner. No manual typing.</p>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #fce7f3, #fbcfe8);">
-                        <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">Sales Reports</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Daily, weekly, and monthly analytics. Understand
-                        your best sellers and peak hours.</p>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
-                        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">Low Stock Alerts</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Automatic alerts when items are running low. Never
-                        run out of your best-selling products.</p>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #ede9fe, #ddd6fe);">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">Multi-User Access</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Set roles for owner, cashier, and staff. Control
-                        who can see and do what in the system.</p>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
-                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">Receipt Printing</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Works with thermal printers. Print professional
-                        receipts instantly for every transaction.</p>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6 cursor-default">
-                    <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #cffafe, #a5f3fc);">
-                        <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-display font-semibold text-gray-900 text-base mb-2">Mobile Friendly</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Use on tablet, phone, or desktop. Monitor your
-                        business from anywhere, anytime.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== BENEFITS ===== -->
-    <section id="benefits" class="py-20 bg-white mesh-bg">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <div class="chip mb-4 inline-flex">Why it matters</div>
-                    <h2 class="text-3xl sm:text-4xl font-display font-bold text-gray-900 mb-6">Run your
-                        business<br>smarter, not harder</h2>
-                    <div class="space-y-5">
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                style="background: linear-gradient(135deg, #22c55e, #16a34a);">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-display font-bold text-gray-900 mb-1">Avoid stock shortages</h4>
-                                <p class="text-gray-500 text-sm leading-relaxed">Never lose a sale because you ran out
-                                    of stock. The system alerts you before it's too late.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-display font-bold text-gray-900 mb-1">Faster checkout experience</h4>
-                                <p class="text-gray-500 text-sm leading-relaxed">Process more customers in less time.
-                                    Shorter queues, happier customers, more revenue.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                style="background: linear-gradient(135deg, #a855f7, #7c3aed);">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-display font-bold text-gray-900 mb-1">Better business tracking</h4>
-                                <p class="text-gray-500 text-sm leading-relaxed">See exactly where your money comes
-                                    from. Identify top products and slow movers at a glance.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-display font-bold text-gray-900 mb-1">Save hours every week</h4>
-                                <p class="text-gray-500 text-sm leading-relaxed">Automated reports and inventory
-                                    tracking saves you hours of manual work every single week.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Stats cards -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="card-hover gradient-card rounded-2xl p-6 border border-blue-100">
-                        <div class="text-4xl font-display font-bold text-blue-600 mb-2">3x</div>
-                        <div class="font-semibold text-gray-700 mb-1">Faster Checkout</div>
-                        <div class="text-sm text-gray-400">Compared to manual cashiering</div>
-                    </div>
-                    <div class="card-hover gradient-card rounded-2xl p-6 border border-green-100">
-                        <div class="text-4xl font-display font-bold text-green-600 mb-2">0</div>
-                        <div class="font-semibold text-gray-700 mb-1">Monthly Fees</div>
-                        <div class="text-sm text-gray-400">One-time investment only</div>
-                    </div>
-                    <div class="card-hover gradient-card rounded-2xl p-6 border border-purple-100">
-                        <div class="text-4xl font-display font-bold text-purple-600 mb-2">24/7</div>
-                        <div class="font-semibold text-gray-700 mb-1">Offline Ready</div>
-                        <div class="text-sm text-gray-400">Works without internet</div>
-                    </div>
-                    <div class="card-hover gradient-card rounded-2xl p-6 border border-orange-100">
-                        <div class="text-4xl font-display font-bold text-orange-500 mb-2">1 day</div>
-                        <div class="font-semibold text-gray-700 mb-1">Quick Setup</div>
-                        <div class="text-sm text-gray-400">Up and running fast</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== HOW IT WORKS ===== -->
-    <section class="py-20 bg-gray-50">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <div class="chip mb-4 inline-flex">Simple process</div>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-gray-900 mb-4">How it works</h2>
-                <p class="text-gray-500 text-lg">From inquiry to fully operational — in 3 simple steps.</p>
-            </div>
-            <div class="relative">
-                <!-- Vertical line -->
-                <div class="absolute left-8 sm:left-1/2 top-0 bottom-0 w-0.5 step-line hidden sm:block"
-                    style="transform: translateX(-50%);"></div>
-                <div class="space-y-10">
-                    <!-- Step 1 -->
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                        <div class="flex-1 sm:text-right order-2 sm:order-1">
-                            <div class="glass-light rounded-2xl p-5 sm:mr-8 card-hover">
-                                <h3 class="font-display font-bold text-gray-900 text-xl mb-2">I customize the system
-                                </h3>
-                                <p class="text-gray-500 text-sm">We discuss your business needs, product list, and
-                                    preferences. I tailor the system to match your brand and workflow.</p>
-                            </div>
-                        </div>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-display font-bold text-xl flex-shrink-0 z-10 order-1 sm:order-2"
-                            style="background: linear-gradient(135deg, #22c55e, #3b82f6);">1</div>
-                        <div class="flex-1 order-3 sm:block hidden"></div>
-                    </div>
-                    <!-- Step 2 -->
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                        <div class="flex-1 order-3 sm:block hidden"></div>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-display font-bold text-xl flex-shrink-0 z-10 order-1"
-                            style="background: linear-gradient(135deg, #3b82f6, #7c3aed);">2</div>
-                        <div class="flex-1 order-2">
-                            <div class="glass-light rounded-2xl p-5 sm:ml-8 card-hover">
-                                <h3 class="font-display font-bold text-gray-900 text-xl mb-2">I set it up for you</h3>
-                                <p class="text-gray-500 text-sm">I install, configure, and test the full system at your
-                                    location. I add your products, set up printers, and train your staff.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Step 3 -->
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                        <div class="flex-1 sm:text-right order-2 sm:order-1">
-                            <div class="glass-light rounded-2xl p-5 sm:mr-8 card-hover">
-                                <h3 class="font-display font-bold text-gray-900 text-xl mb-2">You start using it!</h3>
-                                <p class="text-gray-500 text-sm">Your team is ready to go. Ongoing local support is
-                                    available whenever you need it. No technical knowledge required.</p>
-                            </div>
-                        </div>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-display font-bold text-xl flex-shrink-0 z-10 order-1 sm:order-2"
-                            style="background: linear-gradient(135deg, #f59e0b, #ef4444);">3</div>
-                        <div class="flex-1 order-3 sm:block hidden"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== TESTIMONIALS ===== -->
-    <section id="testimonials" class="py-20 mesh-bg bg-white">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <div class="chip mb-4 inline-flex">What clients say</div>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-gray-900 mb-4">Trusted by local businesses
-                </h2>
-                <p class="text-gray-500 text-lg">Real feedback from real business owners like you.</p>
-            </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="card-hover glass-light rounded-2xl p-6">
-                    <div class="flex mb-3">⭐⭐⭐⭐⭐</div>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">"Dati manual pa talaga yung inventory namin,
-                        laging may missing stock. Ngayon, nalalaman ko agad kung ilan na lang natitira. Malaking tulong
-                        talaga!"</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                            style="background: linear-gradient(135deg, #22c55e, #3b82f6);">MA</div>
-                        <div>
-                            <div class="font-semibold text-gray-800 text-sm">Maria Alcantara</div>
-                            <div class="text-xs text-gray-400">Owner — Alcantara Mini Mart, Bulacan</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6">
-                    <div class="flex mb-3">⭐⭐⭐⭐⭐</div>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">"Yung cashier ko dati nagkakamali sa sukli,
-                        ngayon automatic na ang computation. Mas mabilis pa ang linya ng customers. Sobrang worth it na
-                        investment ito."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                            style="background: linear-gradient(135deg, #3b82f6, #7c3aed);">RD</div>
-                        <div>
-                            <div class="font-semibold text-gray-800 text-sm">Rolando Domingo</div>
-                            <div class="text-xs text-gray-400">Owner — R&D Grocery, Cavite</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-hover glass-light rounded-2xl p-6">
-                    <div class="flex mb-3">⭐⭐⭐⭐⭐</div>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">"Para sa amin na water refilling station,
-                        napakagaling ng system. Alam na namin kung ilang gallon na ang nabenta sa isang araw at kung
-                        kailan mag-aabot sa limit ang aming linya."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                            style="background: linear-gradient(135deg, #f59e0b, #ef4444);">JM</div>
-                        <div>
-                            <div class="font-semibold text-gray-800 text-sm">Jenny Mercado</div>
-                            <div class="text-xs text-gray-400">Owner — Mercado Water Station, Laguna</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== WHY CHOOSE ===== -->
-    <section class="py-20 gradient-hero">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-white mb-4">Why choose this system?</h2>
-                <p class="text-blue-200/70 text-lg">Not just a product — a complete solution with real local support.
-                </p>
-            </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                <div class="glass rounded-2xl p-5 text-center card-hover cursor-default"
-                    style="border: 1px solid rgba(255,255,255,0.15);">
-                    <div class="text-4xl mb-3">💰</div>
-                    <h4 class="font-display font-bold text-white text-lg mb-2">One-Time Payment</h4>
-                    <p class="text-blue-200/60 text-sm">Pay once, use forever. No recurring subscriptions or hidden
-                        fees.</p>
-                </div>
-                <div class="glass rounded-2xl p-5 text-center card-hover cursor-default"
-                    style="border: 1px solid rgba(255,255,255,0.15);">
-                    <div class="text-4xl mb-3">🎨</div>
-                    <h4 class="font-display font-bold text-white text-lg mb-2">Fully Customizable</h4>
-                    <p class="text-blue-200/60 text-sm">Built to match your business. Your products, your branding, your
-                        workflow.</p>
-                </div>
-                <div class="glass rounded-2xl p-5 text-center card-hover cursor-default"
-                    style="border: 1px solid rgba(255,255,255,0.15);">
-                    <div class="text-4xl mb-3">😊</div>
-                    <h4 class="font-display font-bold text-white text-lg mb-2">Easy to Use</h4>
-                    <p class="text-blue-200/60 text-sm">Designed for cashiers with no tech background. Simple, clean,
-                        intuitive.</p>
-                </div>
-                <div class="glass rounded-2xl p-5 text-center card-hover cursor-default"
-                    style="border: 1px solid rgba(255,255,255,0.15);">
-                    <div class="text-4xl mb-3">🤝</div>
-                    <h4 class="font-display font-bold text-white text-lg mb-2">Local Support</h4>
-                    <p class="text-blue-200/60 text-sm">I'm here in the Philippines. Real support in Filipino whenever
-                        you need help.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FAQ ===== -->
-    <section id="faq" class="py-20 bg-gray-50">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <div class="chip mb-4 inline-flex">Got questions?</div>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-gray-900 mb-4">Frequently Asked Questions
-                </h2>
-            </div>
-            <div class="space-y-3">
-                <div class="faq-item glass-light rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaq(this)"
-                        class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-800">Can the system be customized for my specific
-                            business?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer px-5 text-gray-500 text-sm leading-relaxed">
-                        <div class="pb-4">Absolutely! The system is built from scratch based on your business. We'll
-                            discuss your specific needs — product categories, pricing rules, receipt format, user roles,
-                            and more. Everything is tailored to how YOU run your business.</div>
-                    </div>
-                </div>
-                <div class="faq-item glass-light rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaq(this)"
-                        class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-800">Does it work without internet? (Offline mode)</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer px-5 text-gray-500 text-sm leading-relaxed">
-                        <div class="pb-4">Yes! The system is designed to work fully offline. All your data is stored
-                            locally on your device. You don't need a constant internet connection to run your POS and
-                            manage inventory. Internet is only needed for remote monitoring features if included.</div>
-                    </div>
-                </div>
-                <div class="faq-item glass-light rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaq(this)"
-                        class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-800">Can I use it on my phone or tablet?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer px-5 text-gray-500 text-sm leading-relaxed">
-                        <div class="pb-4">Yes! The system is fully responsive and works on any screen size — desktop PC,
-                            laptop, tablet, or Android/iPhone. Many clients use tablets as their POS terminal for a
-                            cleaner counter setup.</div>
-                    </div>
-                </div>
-                <div class="faq-item glass-light rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaq(this)"
-                        class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-800">Is setup and training included?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer px-5 text-gray-500 text-sm leading-relaxed">
-                        <div class="pb-4">Yes! Full installation, configuration, data entry (your products), and staff
-                            training are all included in the package. I'll personally set it up at your location and
-                            make sure your team is comfortable using it before I leave.</div>
-                    </div>
-                </div>
-                <div class="faq-item glass-light rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaq(this)"
-                        class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-800">What happens if something goes wrong?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer px-5 text-gray-500 text-sm leading-relaxed">
-                        <div class="pb-4">I provide local after-sales support via chat, call, or on-site visit. Most
-                            issues can be fixed remotely within the day. You won't be left alone — I'm reachable and
-                            committed to keeping your system running smoothly.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FINAL CTA ===== -->
-    <section id="contact" class="py-24 gradient-hero relative overflow-hidden">
-        <div class="absolute inset-0 pointer-events-none">
-            <div class="absolute top-0 right-0 w-72 h-72 rounded-full"
-                style="background: radial-gradient(circle, rgba(34,197,94,0.15), transparent 70%);"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 rounded-full"
-                style="background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%);"></div>
-        </div>
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div class="text-5xl mb-6">🚀</div>
-            <h2 class="text-3xl sm:text-5xl font-display font-bold text-white mb-5 leading-tight">Upgrade Your
-                Business<br>with a Smarter System</h2>
-            <p class="text-blue-100/70 text-lg mb-10 max-w-xl mx-auto">Stop losing money to manual errors and stock
-                guessing. Get a professional system built for your business — backed by local support you can count on.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <a href="../index.html"
-                    class="btn-primary text-white font-bold px-8 py-4 rounded-2xl text-lg flex items-center justify-center gap-2 shadow-xl">
-                    ← Back to Portfolio
-                </a>
-            </div>
-            <div class="flex flex-wrap justify-center gap-6 text-sm text-blue-200/60">
-                <span class="flex items-center gap-1"><svg class="w-4 h-4 text-green-400" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg> No monthly fees</span>
-                <span class="flex items-center gap-1"><svg class="w-4 h-4 text-green-400" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg> Setup included</span>
-                <span class="flex items-center gap-1"><svg class="w-4 h-4 text-green-400" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg> Local support</span>
-                <span class="flex items-center gap-1"><svg class="w-4 h-4 text-green-400" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clip-rule="evenodd" />
-                    </svg> Customizable</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="bg-gray-900 py-10">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
-                        style="background: linear-gradient(135deg, #22c55e, #3b82f6);">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-3M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M9 7h6" />
-                        </svg>
-                    </div>
-                    <span class="font-display font-bold text-white text-xl">Smart<span
-                            class="text-green-400">POS</span></span>
-                </div>
-                <div class="flex gap-6 text-sm text-gray-500">
-                    <a href="#features" class="hover:text-white transition-colors">Features</a>
-                    <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
-                    <a href="../index.html" class="hover:text-white transition-colors">← Portfolio</a>
-                </div>
-                <p class="text-gray-600 text-sm">© 2024 SmartPOS. Custom solution for your business.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Toast notification -->
-    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 hidden">
-        <div class="flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl text-white font-medium text-sm"
-            style="background: linear-gradient(135deg, #1e3a8a, #15803d);">
-            <svg class="w-5 h-5 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span id="toast-msg"></span>
-        </div>
+      </div>
     </div>
 
-    <script>
-        // ===== DATA =====
-        const products = [
-            { id: 1, name: 'Coca-Cola 1.5L', price: 75, emoji: '🥤', category: 'Drinks', stock: 42 },
-            { id: 2, name: 'Skyflakes', price: 12, emoji: '🍘', category: 'Snacks', stock: 85 },
-            { id: 3, name: 'C2 Green Tea', price: 25, emoji: '🍵', category: 'Drinks', stock: 30 },
-            { id: 4, name: 'Lucky Me Instant', price: 14, emoji: '🍜', category: 'Food', stock: 120 },
-            { id: 5, name: 'Pringles Original', price: 99, emoji: '🥔', category: 'Snacks', stock: 8 },
-            { id: 6, name: 'Bear Brand Milk', price: 55, emoji: '🥛', category: 'Dairy', stock: 25 },
-            { id: 7, name: 'Gallon Water', price: 35, emoji: '💧', category: 'Water', stock: 60 },
-            { id: 8, name: 'Kopiko Candy', price: 2, emoji: '🍬', category: 'Candy', stock: 200 },
-            { id: 9, name: 'Sunsilk Shampoo', price: 8, emoji: '🧴', category: 'Personal', stock: 3 },
-        ];
-
-        const inventoryData = [
-            { name: 'Coca-Cola 1.5L', category: 'Drinks', price: 75, stock: 42, max: 60 },
-            { name: 'Skyflakes Crackers', category: 'Snacks', price: 12, stock: 85, max: 120 },
-            { name: 'C2 Green Tea', category: 'Drinks', price: 25, stock: 30, max: 50 },
-            { name: 'Lucky Me Instant Noodles', category: 'Food', price: 14, stock: 120, max: 200 },
-            { name: 'Pringles Original', category: 'Snacks', price: 99, stock: 8, max: 50 },
-            { name: 'Bear Brand Milk', category: 'Dairy', price: 55, stock: 25, max: 40 },
-            { name: 'Gallon Purified Water', category: 'Water', price: 35, stock: 60, max: 80 },
-            { name: 'Sunsilk Shampoo Sachet', category: 'Personal', price: 8, stock: 3, max: 50 },
-            { name: 'Chippy Corn Chips', category: 'Snacks', price: 18, stock: 0, max: 60 },
-            { name: 'Del Monte Ketchup', category: 'Condiments', price: 45, stock: 12, max: 30 },
-        ];
-
-        let cart = {};
-        let discountPct = 0;
-
-        // ===== INVENTORY =====
-        function renderInventory(nameFilter = '', statusFilter = '') {
-            const tbody = document.getElementById('inventory-body');
-            const filtered = inventoryData.filter(item => {
-                const nameOk = item.name.toLowerCase().includes(nameFilter.toLowerCase());
-                let statusOk = true;
-                if (statusFilter === 'ok') statusOk = item.stock > 10;
-                else if (statusFilter === 'low') statusOk = item.stock > 0 && item.stock <= 10;
-                else if (statusFilter === 'out') statusOk = item.stock === 0;
-                return nameOk && statusOk;
-            });
-            tbody.innerHTML = filtered.map(item => {
-                const pct = Math.round((item.stock / item.max) * 100);
-                let badge, barColor;
-                if (item.stock === 0) { badge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-600">Out of Stock</span>'; barColor = '#ef4444'; }
-                else if (item.stock <= 10) { badge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 badge-low">⚠️ Low Stock</span>'; barColor = '#f59e0b'; }
-                else { badge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">In Stock</span>'; barColor = '#22c55e'; }
-                return `
-      <tr class="hover:bg-white/50 transition-colors">
-        <td class="py-3 pr-4">
-          <div class="font-medium text-white">${item.name}</div>
-          <div class="flex items-center gap-2 mt-1">
-            <div class="flex-1 h-1 rounded-full bg-white/10" style="max-width:80px;"><div class="h-full rounded-full" style="width:${pct}%;background:${barColor};"></div></div>
-            <span class="text-xs text-gray-400">${pct}%</span>
+    <div class="hero-right">
+      <div class="dashboard-shell">
+        <div class="dash-topbar">
+          <div class="dash-dots">
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
+            <div class="dash-dot"></div>
           </div>
-        </td>
-        <td class="py-3 pr-4 text-gray-400 text-sm">${item.category}</td>
-        <td class="py-3 pr-4 text-right text-white font-medium text-sm">₱${item.price.toFixed(2)}</td>
-        <td class="py-3 pr-4 text-right text-white font-medium text-sm">${item.stock}</td>
-        <td class="py-3 text-center">${badge}</td>
-      </tr>
-    `;
-            }).join('');
-            if (!filtered.length) tbody.innerHTML = '<tr><td colspan="5" class="text-center py-6 text-gray-500 text-sm">No items match your filter.</td></tr>';
-        }
+          <div class="dash-title">Juan's Mini Mart — Dashboard</div>
+          <div class="dash-live">
+            <div class="dash-live-dot"></div>
+            live
+          </div>
+        </div>
+        <div class="dash-body">
+          <div class="dash-stats-row">
+            <div class="dash-stat">
+              <div class="dash-stat-label">Today's sales</div>
+              <div class="dash-stat-value">₱8,240</div>
+              <div class="dash-stat-sub up">↑ 12% vs yesterday</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Transactions</div>
+              <div class="dash-stat-value">134</div>
+              <div class="dash-stat-sub">↑ 8 this hour</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Low stock</div>
+              <div class="dash-stat-value" style="color:#a16207;">4</div>
+              <div class="dash-stat-sub warn">items to reorder</div>
+            </div>
+          </div>
+          <div class="dash-chart-box">
+            <div class="dash-chart-header">
+              <span class="dash-chart-title">Weekly sales</span>
+              <span class="dash-chart-total">₱48,190</span>
+            </div>
+            <div class="dash-bars">
+              <div class="dash-bar" style="height:46%;"></div>
+              <div class="dash-bar" style="height:62%;"></div>
+              <div class="dash-bar" style="height:41%;"></div>
+              <div class="dash-bar" style="height:77%;"></div>
+              <div class="dash-bar" style="height:55%;"></div>
+              <div class="dash-bar" style="height:70%;"></div>
+              <div class="dash-bar today" style="height:89%;"></div>
+            </div>
+            <div class="dash-days">
+              <span class="dash-day-label">M</span>
+              <span class="dash-day-label">T</span>
+              <span class="dash-day-label">W</span>
+              <span class="dash-day-label">T</span>
+              <span class="dash-day-label">F</span>
+              <span class="dash-day-label">S</span>
+              <span class="dash-day-label today">S</span>
+            </div>
+          </div>
+          <div class="dash-transactions">
+            <div class="dash-tx-header">Recent activity</div>
+            <div class="dash-tx-row">
+              <div class="dash-tx-left">
+                <div class="dash-tx-icon sale">🛍</div>
+                <div>
+                  <div class="dash-tx-name">POS Sale</div>
+                  <div class="dash-tx-time">2 min ago</div>
+                </div>
+              </div>
+              <div class="dash-tx-amount pos">+₱145.00</div>
+            </div>
+            <div class="dash-tx-row">
+              <div class="dash-tx-left">
+                <div class="dash-tx-icon sale">🛍</div>
+                <div>
+                  <div class="dash-tx-name">POS Sale</div>
+                  <div class="dash-tx-time">8 min ago</div>
+                </div>
+              </div>
+              <div class="dash-tx-amount pos">+₱89.50</div>
+            </div>
+            <div class="dash-tx-row">
+              <div class="dash-tx-left">
+                <div class="dash-tx-icon warn">⚠️</div>
+                <div>
+                  <div class="dash-tx-name">Low stock — Rice</div>
+                  <div class="dash-tx-time">3 sacks remaining</div>
+                </div>
+              </div>
+              <div class="dash-tx-amount neg">Reorder</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        function filterInventory() {
-            renderInventory(document.getElementById('inv-search').value, document.getElementById('inv-status').value);
-        }
+<!-- ═══ USE CASES ═══ -->
+<div class="use-strip">
+  <div class="use-strip-inner">
+    <span class="use-label">Built for</span>
+    <div class="use-item"><span class="use-item-icon">🏪</span><span class="use-item-text">Mini Mart</span></div>
+    <div class="use-item"><span class="use-item-icon">💧</span><span class="use-item-text">Water Station</span></div>
+    <div class="use-item"><span class="use-item-icon">🛍️</span><span class="use-item-text">Retail Shop</span></div>
+    <div class="use-item"><span class="use-item-icon">🥬</span><span class="use-item-text">Grocery Store</span></div>
+    <div class="use-item"><span class="use-item-icon">☕</span><span class="use-item-text">Food Stall</span></div>
+  </div>
+</div>
 
-        // ===== MODAL =====
-        function openModal(id) {
-            const el = document.getElementById(id);
-            el.classList.remove('hidden');
-            el.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-        }
+<!-- ═══ FEATURES ═══ -->
+<section id="features" class="section features-bg">
+  <div class="section-inner">
+    <div class="section-header section-header-split">
+      <div>
+        <p class="t-label" style="margin-bottom:12px;">Features</p>
+        <h2 class="t-heading" style="max-width: 300px;">Everything you need to run the counter</h2>
+      </div>
+      <p class="t-subheading" style="max-width:400px; padding-top: 8px;">
+        No bloat, no subscriptions. The tools that actually matter for a local retail business.
+      </p>
+    </div>
 
-        function closeModal(id) {
-            const el = document.getElementById(id);
-            el.classList.add('hidden');
-            el.classList.remove('flex');
-            document.body.style.overflow = '';
-        }
+    <div class="features-grid">
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <div class="feature-name">Real-time inventory</div>
+        <div class="feature-desc">Levels update the moment a sale goes through. No manual counting.</div>
+      </div>
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 2.3c-.6.6-.2 1.7.7 1.7H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <div class="feature-name">POS checkout</div>
+        <div class="feature-desc">Clean, fast interface. Cashiers learn it in minutes, not days.</div>
+      </div>
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+        <div class="feature-name">Barcode scanning</div>
+        <div class="feature-desc">Works with any USB or wireless scanner. Plug in and go.</div>
+      </div>
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <div class="feature-name">Sales reports</div>
+        <div class="feature-desc">Daily, weekly, monthly. See what's selling and when.</div>
+      </div>
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-4-5.7V5a2 2 0 10-4 0v.3A6 6 0 006 11v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        <div class="feature-name">Low stock alerts</div>
+        <div class="feature-desc">Set thresholds per product. Get notified before you run out.</div>
+      </div>
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 20h5v-2a3 3 0 00-5.4-1.9M17 20H7m10 0v-2c0-.7-.1-1.3-.4-1.9M7 20H2v-2a3 3 0 015.4-1.9M7 20v-2c0-.7.1-1.3.4-1.9m0 0a5 5 0 019.2 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <div class="feature-name">Multi-user access</div>
+        <div class="feature-desc">Owner, cashier, staff — each with their own permissions.</div>
+      </div>
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        <div class="feature-name">Receipt printing</div>
+        <div class="feature-desc">Compatible with thermal printers. Prints in under two seconds.</div>
+      </div>
+      <div class="feature-cell">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        <div class="feature-name">Works on any device</div>
+        <div class="feature-desc">Tablet, phone, or desktop. Fully responsive from day one.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- ═══ BENEFITS ═══ -->
+<section id="benefits" class="section benefits-bg">
+  <div class="section-inner">
+    <div class="benefits-split">
+      <div>
+        <p class="t-label" style="margin-bottom:16px;">Why it matters</p>
+        <h2 class="t-heading" style="margin-bottom:40px;">Run leaner.<br>Make fewer mistakes.</h2>
+        <div class="benefits-list">
+          <div class="benefit-row">
+            <div class="benefit-num">01</div>
+            <div class="benefit-text">
+              <div class="benefit-title">No more stock surprises</div>
+              <div class="benefit-desc">The system flags items before they hit zero. You'll always know what needs restocking.</div>
+            </div>
+          </div>
+          <div class="benefit-row">
+            <div class="benefit-num">02</div>
+            <div class="benefit-text">
+              <div class="benefit-title">Faster at the counter</div>
+              <div class="benefit-desc">Scanning and auto-computation cuts checkout time significantly. Shorter queues, more throughput.</div>
+            </div>
+          </div>
+          <div class="benefit-row">
+            <div class="benefit-num">03</div>
+            <div class="benefit-text">
+              <div class="benefit-title">Know your numbers</div>
+              <div class="benefit-desc">Reports show your top sellers, slow movers, and daily totals — without opening a spreadsheet.</div>
+            </div>
+          </div>
+          <div class="benefit-row">
+            <div class="benefit-num">04</div>
+            <div class="benefit-text">
+              <div class="benefit-title">Less manual work each week</div>
+              <div class="benefit-desc">Automated reports and tracking gives you back hours you'd otherwise spend on manual reconciliation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div>
+        <p class="t-label" style="margin-bottom:24px;">By the numbers</p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">3×</div>
+            <div class="stat-label">Faster checkout</div>
+            <div class="stat-sub">vs. manual cashiering</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">₱0</div>
+            <div class="stat-label">Monthly cost</div>
+            <div class="stat-sub">one-time investment only</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Works offline</div>
+            <div class="stat-sub">no internet required</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">1 day</div>
+            <div class="stat-label">To go live</div>
+            <div class="stat-sub">setup included</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // ===== TOAST =====
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = msg;
-            toast.classList.remove('hidden');
-            toast.style.opacity = '1';
-            clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.classList.add('hidden'), 300);
-            }, 2500);
-        }
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how" class="section how-bg">
+  <div class="section-inner">
+    <div class="section-header section-header-split">
+      <div>
+        <p class="t-label" style="margin-bottom:12px;">Process</p>
+        <h2 class="t-heading">From inquiry to live<br>in three steps</h2>
+      </div>
+      <p class="t-subheading" style="max-width:380px; padding-top:8px;">
+        I handle everything from customization to installation. You don't need to be technical.
+      </p>
+    </div>
+    <div class="steps-row">
+      <div class="step-cell">
+        <div class="step-num">STEP 01</div>
+        <h3 class="step-title">We talk about your business</h3>
+        <p class="step-desc">I ask about your products, how you currently manage inventory, what's not working, and what you need the system to do. This shapes everything that follows.</p>
+      </div>
+      <div class="step-cell">
+        <div class="step-num">STEP 02</div>
+        <h3 class="step-title">I build and set it up</h3>
+        <p class="step-desc">The system is customized for your business, installed on your hardware, and tested before handoff. Products, user accounts, printers — all configured by me.</p>
+      </div>
+      <div class="step-cell">
+        <div class="step-num">STEP 03</div>
+        <h3 class="step-title">Your team starts using it</h3>
+        <p class="step-desc">I train your staff on-site. Local support is available whenever something comes up — by chat, call, or in person if needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // ===== FAQ =====
-        function toggleFaq(btn) {
-            const answer = btn.nextElementSibling;
-            const icon = btn.querySelector('svg');
-            const isOpen = answer.classList.contains('open');
-            document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
-            document.querySelectorAll('.faq-item button svg').forEach(i => i.style.transform = '');
-            if (!isOpen) {
-                answer.classList.add('open');
-                icon.style.transform = 'rotate(180deg)';
-            }
-        }
+<!-- ═══ TESTIMONIALS ═══ -->
+<section id="testimonials" class="section testimonials-bg">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="t-label" style="margin-bottom:12px;">Client feedback</p>
+      <h2 class="t-heading">What business owners say</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">"Dati manual pa talaga yung inventory namin, laging may missing stock. Ngayon, nalalaman ko agad kung ilan na lang natitira. Malaking tulong talaga."</p>
+        <div class="testimonial-meta">
+          <div class="testimonial-avatar">MA</div>
+          <div>
+            <div class="testimonial-name">Maria Alcantara</div>
+            <div class="testimonial-biz">Alcantara Mini Mart, Bulacan</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">"Yung cashier ko dati nagkakamali sa sukli, ngayon automatic na ang computation. Mas mabilis pa ang linya ng customers. Sobrang worth it na investment ito."</p>
+        <div class="testimonial-meta">
+          <div class="testimonial-avatar">RD</div>
+          <div>
+            <div class="testimonial-name">Rolando Domingo</div>
+            <div class="testimonial-biz">R&D Grocery, Cavite</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">"Para sa amin na water refilling station, napakagaling ng system. Alam na namin kung ilang gallon na ang nabenta sa isang araw at kung kailan mag-aabot sa limit."</p>
+        <div class="testimonial-meta">
+          <div class="testimonial-avatar">JM</div>
+          <div>
+            <div class="testimonial-name">Jenny Mercado</div>
+            <div class="testimonial-biz">Mercado Water Station, Laguna</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // ===== NAVBAR SCROLL =====
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 60) {
-                nav.style.background = 'rgba(15, 23, 42, 0.95)';
-                nav.style.backdropFilter = 'blur(12px)';
-                nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.3)';
-            } else {
-                nav.style.background = 'transparent';
-                nav.style.backdropFilter = '';
-                nav.style.boxShadow = '';
-            }
-        });
+<!-- ═══ WHY CHOOSE ═══ -->
+<section class="section why-bg">
+  <div class="section-inner">
+    <div style="margin-bottom: 48px;">
+      <p class="t-label" style="color: rgba(255,255,255,0.35); margin-bottom: 12px;">Why this system</p>
+      <h2 style="font-size: clamp(1.5rem,3vw,2.2rem); font-weight:500; letter-spacing:-0.02em; color:rgba(255,255,255,0.9); line-height:1.15;">Not just software — a complete local solution</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-cell">
+        <div class="why-icon-box">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M8 2v12M2 8h12"/></svg>
+        </div>
+        <div class="why-title">One-time payment</div>
+        <div class="why-desc">Pay once, use it for years. No subscriptions, no recurring fees, no surprises.</div>
+      </div>
+      <div class="why-cell">
+        <div class="why-icon-box">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M2 8c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z"/><path d="M8 5v3l2 2"/></svg>
+        </div>
+        <div class="why-title">Built for your business</div>
+        <div class="why-desc">Customized with your products, your branding, your workflow. Not a generic template.</div>
+      </div>
+      <div class="why-cell">
+        <div class="why-icon-box">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h4"/></svg>
+        </div>
+        <div class="why-title">Simple by design</div>
+        <div class="why-desc">Cashiers with no tech background pick it up quickly. Clean, no clutter.</div>
+      </div>
+      <div class="why-cell">
+        <div class="why-icon-box">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M8 6v2l1.5 1.5"/></svg>
+        </div>
+        <div class="why-title">Local support in Filipino</div>
+        <div class="why-desc">I'm based in the Philippines. You can reach me by chat, call, or in person.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // ===== MOBILE MENU =====
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const hamburger = document.getElementById('hamburger-icon');
-            const close = document.getElementById('close-icon');
-            menu.classList.toggle('hidden');
-            hamburger.classList.toggle('hidden');
-            close.classList.toggle('hidden');
-        }
+<!-- ═══ FAQ ═══ -->
+<section id="faq" class="section faq-bg">
+  <div class="section-inner">
+    <div class="faq-layout">
+      <div class="faq-left">
+        <p class="t-label" style="margin-bottom:14px;">FAQ</p>
+        <h2 class="faq-left-title">Common questions</h2>
+        <p class="faq-left-sub">If you have something specific in mind, reach out directly — I usually reply the same day.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span class="faq-q">Can the system be customized for my specific business?</span>
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Yes. The system is built from your product list, categories, and pricing rules. We'll go through your specific setup before I write a single line of code — things like receipt format, user permissions, and any special workflows you have.</div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span class="faq-q">Does it work without internet?</span>
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Fully. All data is stored locally on your device. POS, inventory, and reports all work offline. Internet is only needed if you want remote monitoring across multiple locations.</div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span class="faq-q">Can I use it on my phone or tablet?</span>
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Yes. The interface works on any screen size — desktop, laptop, tablet, or phone. Most clients set up a tablet as their POS terminal and use a laptop or phone for monitoring.</div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span class="faq-q">Is setup and staff training included?</span>
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Yes. I install and configure everything at your location, enter your product catalog, set up connected devices like printers and scanners, and walk your team through how to use it before I leave.</div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span class="faq-q">What happens if something breaks or stops working?</span>
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Most issues can be resolved remotely within the same day. For anything that needs hands-on attention, I can visit on-site. You won't be left figuring things out on your own.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        function closeMobileMenu() {
-            document.getElementById('mobile-menu').classList.add('hidden');
-            document.getElementById('hamburger-icon').classList.remove('hidden');
-            document.getElementById('close-icon').classList.add('hidden');
-        }
+<!-- ═══ CTA ═══ -->
+<section id="contact" class="cta-section">
+  <div class="cta-inner">
+    <div>
+      <p class="cta-left-kicker">Get started</p>
+      <h2 class="cta-title">Ready to stop doing it manually?</h2>
+      <p class="cta-sub">Tell me about your business and I'll put together a quote. Setup is usually done within a week of your go-ahead.</p>
+      <div class="cta-checks">
+        <div class="cta-check"><div class="check-dot"></div>No monthly fees — one-time cost only</div>
+        <div class="cta-check"><div class="check-dot"></div>Setup and training included</div>
+        <div class="cta-check"><div class="check-dot"></div>Works offline, on any device</div>
+        <div class="cta-check"><div class="check-dot"></div>Local support in Filipino</div>
+      </div>
+    </div>
+    <div class="cta-right">
+      <div class="cta-card-title">Get in touch</div>
+      <div class="cta-card-sub">Pick whichever channel you prefer. I reply within the day.</div>
+      <div class="cta-contact-links">
+        <a href="https://m.me/" class="cta-link">
+          <div class="cta-link-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.4-4 8-9 8a9.9 9.9 0 01-4.3-1L3 21l1.3-4.7A8.3 8.3 0 013 12c0-4.4 4-8 9-8s9 3.6 9 8z"/></svg>
+          </div>
+          <span class="cta-link-label">Message on Facebook</span>
+          <span class="cta-link-detail">Fastest response →</span>
+        </a>
+        <a href="https://wa.me/" class="cta-link">
+          <div class="cta-link-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.9v3a2 2 0 01-2.2 2A19.8 19.8 0 013.4 5.2 2 2 0 015.4 3h3a2 2 0 012 1.7c.1.8.4 1.6.7 2.3a2 2 0 01-.4 2.1L9.9 10a16 16 0 006.8 6.1l.7-.8a2 2 0 012.1-.4c.7.3 1.5.5 2.3.7A2 2 0 0122 16.9z"/></svg>
+          </div>
+          <span class="cta-link-label">WhatsApp / Viber</span>
+          <span class="cta-link-detail">Same day →</span>
+        </a>
+        <a href="mailto:hello@smartpos.ph" class="cta-link">
+          <div class="cta-link-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <span class="cta-link-label">Send an email</span>
+          <span class="cta-link-detail">hello@smartpos.ph →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2024 SmartPOS — custom POS for local businesses</span>
+    <ul class="footer-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</footer>
 
-        // ===== INIT =====
-        renderInventory();
-    </script>
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  function toggleMobile() {
+    document.getElementById('mobile-nav').classList.toggle('open');
+  }
+
+  function closeMobile() {
+    document.getElementById('mobile-nav').classList.remove('open');
+  }
+</script>
 </body>
-
 </html>
