@@ -1,4 +1,5 @@
 import React from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { useTheme } from './hooks/useTheme';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ProfileHeader } from './components/ProfileHeader';
@@ -15,6 +16,7 @@ function App() {
 
   return (
     <>
+      <Analytics />
       <ThemeToggle theme={theme} onToggle={toggle} />
 
       <div className="page page-enter">
