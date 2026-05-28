@@ -7,7 +7,7 @@ import { About } from './components/About';
 import { TechStack } from './components/TechStack';
 import { OJTHighlights } from './components/OJTHighlights';
 import { ProjectsCerts } from './components/ProjectsCerts';
-import { Gallery } from './components/Gallery';
+// import { Gallery } from './components/Gallery'; // Certifications hidden — files kept
 import { FooterGrid } from './components/FooterGrid';
 import { Sidebar } from './components/Sidebar';
 
@@ -29,7 +29,7 @@ function App() {
             <TechStack />
             <OJTHighlights />
             <ProjectsCerts />
-            <Gallery />
+            {/* <Gallery /> — Certifications hidden, files kept in /public/certificates/ */}
             <FooterGrid />
           </div>
 

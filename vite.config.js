@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        portfolio: resolve(__dirname, 'portfolio.html'),
+        main: resolve(__dirname, 'index.html'),       // portfolio (now the homepage)
+        landing: resolve(__dirname, 'landing.html'),  // old landing page (kept for future use)
       },
     },
   },

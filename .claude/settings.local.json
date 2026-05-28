@@ -10,7 +10,10 @@
       "Bash(mv \"CYBERSECURITY TURNING DATA INTO DEFENSE.png\" \"cybersecurity-data-defense.png\")",
       "Bash(python3 -c ' *)",
       "Bash(python3)",
-      "Bash(dir \"c:\\\\MyProjects\\\\Portfolio\\\\public\" /b)"
+      "Bash(dir \"c:\\\\MyProjects\\\\Portfolio\\\\public\" /b)",
+      "WebFetch(domain:bryllim.com)",
+      "Bash(copy \"c:\\\\MyProjects\\\\Portfolio\\\\PrinceArveeAvena_Resume.pdf\" \"c:\\\\MyProjects\\\\Portfolio\\\\public\\\\PrinceArveeAvena_Resume.pdf\")",
+      "PowerShell(Copy-Item \"c:\\\\MyProjects\\\\Portfolio\\\\PrinceArveeAvena_Resume.pdf\" \"c:\\\\MyProjects\\\\Portfolio\\\\public\\\\PrinceArveeAvena_Resume.pdf\" -Force)"
     ]
   }
 }
