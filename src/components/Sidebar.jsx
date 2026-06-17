@@ -2,15 +2,21 @@ import React from 'react';
 
 const EXPERIENCE = [
     {
-        role: 'Student Intern (OJT)',
-        org: "ICCBI Registrar's Office",
-        year: '2025',
+        role: 'Freelance Web Developer',
+        org: 'Self-Employed',
+        year: '2025–Now',
         active: true,
     },
     {
+        role: 'Student Intern (OJT)',
+        org: "ICCBI Registrar's Office",
+        year: 'Dec 2025 – Apr 2026',
+        active: false,
+    },
+    {
         role: 'BS Computer Science',
-        org: 'Immaculate Conception College of Balayan',
-        year: '2022',
+        org: 'Immaculate Conception College of Balayan · Magna Cum Laude',
+        year: 'Apr 2026',
         active: false,
     },
 ];

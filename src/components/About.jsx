@@ -9,13 +9,14 @@ export function About() {
             <div className="sec-title" style={{ marginBottom: '16px' }}>About</div>
             <div className="about-body">
                 <p>
-                    Detail-oriented Computer Science graduate with hands-on experience in administrative systems, records management, and digital solutions. I specialize in building and improving efficient data workflows and user-focused interfaces that support real operational needs.
+                    Computer Science graduate with hands-on experience delivering web and mobile applications,
+                    business systems, and technology-driven solutions. Skilled in problem-solving, project
+                    execution, and adapting to new challenges in fast-paced environments.
                 </p>
                 <p>
-                    During my internship at the Registrar's Office, I processed and managed 500+ student academic records with strict attention to accuracy, data integrity, and confidentiality. I also contributed to enrollment system updates and helped digitize physical records, improving retrieval speed and overall office efficiency.
-                </p>
-                <p>
-                    Beyond administrative systems, I am actively transitioning into full-stack and front-end development. I enjoy designing clean, functional user interfaces and building web applications using modern technologies such as React and TypeScript. I am currently deepening my skills in frontend engineering and UI/UX design with a focus on creating scalable, real-world systems.
+                    Recognized for strong communication, organization, and attention to detail, with the
+                    ability to work independently or collaboratively to achieve goals. Committed to continuous
+                    learning, professional growth, and delivering high-quality results.
                 </p>
             </div>
         </div>

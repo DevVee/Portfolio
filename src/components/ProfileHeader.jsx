@@ -30,7 +30,7 @@ export function ProfileHeader() {
                     </svg>
                     Balayan, Batangas, Philippines
                 </div>
-                <div className="profile-tagline">Computer Science Graduate · Web Developer · Digital Designer</div>
+                <div className="profile-tagline">Freelance Web Developer · CS Graduate · Magna Cum Laude</div>
 
                 <div className="degree-chip">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -52,7 +52,7 @@ export function ProfileHeader() {
                         </svg>
                         +63 916 892 7345
                     </a>
-                    <a href="/PrinceArveeAvena_Resume.pdf" download className="btn">
+                    <a href="/RESUME.pdf" download="PrinceArveeAvena_Resume.pdf" className="btn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                             <polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
