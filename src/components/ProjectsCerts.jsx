@@ -103,6 +103,7 @@ function ProjectCard({ project, index }) {
 }
 
 function Recommendations() {
+    const ref = useReveal();
     const [idx, setIdx] = useState(0);
 
     useEffect(() => {
@@ -111,7 +112,7 @@ function Recommendations() {
     }, []);
 
     return (
-        <div className="section reveal" style={{ borderBottom: 'none', marginBottom: 0, paddingBottom: 0 }}>
+        <div className="section reveal" ref={ref} style={{ borderBottom: 'none', marginBottom: 0, paddingBottom: 0 }}>
             <div className="sec-head" style={{ marginBottom: '12px' }}>
                 <div className="sec-title">Recommendations</div>
             </div>
