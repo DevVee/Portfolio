@@ -10,7 +10,7 @@ const EXPERIENCE = [
     {
         role: 'Freelance Web Developer',
         org: 'Self-Employed',
-        year: '2025 – Jun 2026',
+        year: 'Feb 2025 – Jun 2026',
         active: false,
     },
     {

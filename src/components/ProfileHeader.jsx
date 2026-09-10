@@ -30,13 +30,21 @@ export function ProfileHeader() {
                     </svg>
                     Balayan, Batangas, Philippines
                 </div>
-                <div className="profile-tagline">Full-Stack Developer · React · Next.js · AWS</div>
+                <div className="profile-tagline">Full-Stack Developer · Web · DevOps · AI</div>
 
                 <div className="degree-chip">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                         <path d="M22 10v6M2 10l10 5 10-5-10-5-10 5z" />
                     </svg>
-                    BS Computer Science — April 2026 · Magna Cum Laude · Immaculate Conception College of Balayan, Inc.
+                    <span className="degree-text">
+                        <span className="degree-main">
+                            BS Computer Science
+                            <span className="degree-honor">Magna Cum Laude</span>
+                        </span>
+                        <span className="degree-sub">
+                            Immaculate Conception College of Balayan, Inc. · April 2026
+                        </span>
+                    </span>
                 </div>
 
                 <div className="action-row">

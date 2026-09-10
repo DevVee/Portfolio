@@ -11,9 +11,9 @@ const EXPERIENCE = [
     },
     {
         role: 'Freelance Web Developer',
-        org: 'Independent Clients',
-        period: '2025 – Jun 2026',
-        desc: 'Delivered marketing sites and business systems for small businesses and organizations, handling requirements, design, implementation and deployment end to end — including point-of-sale, payroll, clinic management and travel booking platforms.',
+        org: 'Self-Employed',
+        period: 'Feb 2025 – Jun 2026',
+        desc: 'Delivered marketing sites and business systems for small businesses and organizations, handling requirements, design, implementation and deployment end to end, including point-of-sale, payroll, clinic management and travel booking platforms.',
         tags: ['React', 'TypeScript', 'Laravel', 'Supabase', 'Vercel'],
     },
     {

@@ -5,7 +5,7 @@ const PROJECTS = [
     {
         name: 'GradNet',
         label: 'ICCBI Alumni Connect',
-        desc: 'A full-featured alumni networking platform for Immaculate Conception College of Balayan — batchmate discovery, push notifications, alumni directory, and social posting.',
+        desc: 'A full-featured alumni networking platform for Immaculate Conception College of Balayan: batchmate discovery, push notifications, alumni directory, and social posting.',
         tags: ['Laravel 12', 'PHP 8.2', 'PostgreSQL', 'Supabase'],
         type: 'Web App',
         href: 'https://github.com/DevVee/GradNet',
@@ -13,7 +13,7 @@ const PROJECTS = [
     {
         name: 'Clinovia',
         label: 'Smart School Clinic System',
-        desc: 'School clinic management system for ICCBI — patient records, appointment scheduling, medicine inventory, consultation logs, and role-based access control.',
+        desc: 'School clinic management system for ICCBI: patient records, appointment scheduling, medicine inventory, consultation logs, and role-based access control.',
         tags: ['Laravel 12', 'PHP 8.2', 'MySQL', 'Blade'],
         type: 'Web App',
         href: 'https://github.com/DevVee/Clinovia',
@@ -30,7 +30,7 @@ const PROJECTS = [
     {
         name: 'HomeFixer',
         label: 'Home Services Marketplace',
-        desc: 'Platform connecting homeowners with verified service professionals — provider search, appointment booking, real-time tracking, and secure payments via GCash and Maya.',
+        desc: 'Platform connecting homeowners with verified service professionals: provider search, appointment booking, real-time tracking, and secure payments via GCash and Maya.',
         tags: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase'],
         type: 'Web App',
         href: 'https://github.com/DevVee/HomeFixer',
@@ -39,7 +39,7 @@ const PROJECTS = [
     {
         name: 'TenPOS',
         label: 'Point of Sale System',
-        desc: 'Full-featured POS system with a web dashboard and companion mobile app — product management, sales tracking, inventory, receipts, and real-time analytics.',
+        desc: 'Full-featured POS system with a web dashboard and companion mobile app: product management, sales tracking, inventory, receipts, and real-time analytics.',
         tags: ['React 19', 'TypeScript', 'Supabase', 'React Native', 'Expo'],
         type: 'Web + Mobile',
         href: 'https://github.com/DevVee/TenPOS',
@@ -48,7 +48,7 @@ const PROJECTS = [
     {
         name: 'TenPayroll',
         label: 'HR & Payroll Platform',
-        desc: 'Philippines-compliant enterprise payroll platform — SSS 2024, PhilHealth 5%, Pag-IBIG, BIR TRAIN Law, attendance kiosk, leave & overtime management, and audit logs.',
+        desc: 'Philippines-compliant enterprise payroll platform: SSS 2024, PhilHealth 5%, Pag-IBIG, BIR TRAIN Law, attendance kiosk, leave & overtime management, and audit logs.',
         tags: ['React 19', 'TypeScript', 'Supabase', 'Tailwind CSS', 'Recharts'],
         type: 'Web App',
         href: 'https://github.com/DevVee/TenPayroll',
@@ -57,7 +57,7 @@ const PROJECTS = [
     {
         name: 'AND Travel',
         label: 'Travel Agency Website',
-        desc: 'Marketing website for A N D Travel and Tours — destination showcase, service listings, package highlights, contact form, and smooth scroll animations.',
+        desc: 'Marketing website for A N D Travel and Tours: destination showcase, service listings, package highlights, contact form, and smooth scroll animations.',
         tags: ['React 19', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Vite'],
         type: 'Website',
         href: 'https://github.com/DevVee/and-travel-tours-website',

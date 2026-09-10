@@ -9,7 +9,7 @@ export function About() {
             <div className="sec-title" style={{ marginBottom: '16px' }}>About</div>
             <div className="about-body">
                 <p>
-                    Full-stack developer building production web and mobile applications end to end — React
+                    Full-stack developer building production web and mobile applications end to end. React
                     and Next.js on the front, Node and PHP services over PostgreSQL on the back, deployed to
                     AWS on containerized infrastructure. Comfortable owning a feature from schema design
                     through CI/CD to a live deployment.

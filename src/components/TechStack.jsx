@@ -29,10 +29,19 @@ const STACK = [
         ],
     },
     {
-        cat: 'AI & Integrations',
+        cat: 'AI Engineering',
         tags: [
             'AWS Bedrock', 'LLM Integration', 'RAG Pipelines',
-            'Vector Embeddings', 'Groq API', 'Resend API',
+            'Vector Embeddings', 'Prompt Engineering', 'MCP (Model Context Protocol)',
+            'Groq API', 'OpenAI API', 'Anthropic API', 'Resend API',
+        ],
+    },
+    {
+        cat: 'AI-Assisted Development',
+        tags: [
+            'Claude Code', 'Cursor', 'OpenAI Codex', 'GitHub Copilot',
+            'Claude', 'ChatGPT', 'Gemini', 'v0', 'Agentic Workflows',
+            'AI Code Review', 'AI Pair Programming',
         ],
     },
     {
