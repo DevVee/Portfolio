@@ -15,6 +15,19 @@
   --card: #ffffff;
   --card-border: #e4e4e7;
   --tag-bg: #f4f4f5;
+
+  /* Skill category accents — light theme.
+     Chosen for >=4.5:1 against --bg; each pairs with a 10%-alpha wash. */
+  --c-frontend: #1d4ed8;
+  --c-backend:  #047857;
+  --c-cloud:    #b45309;
+  --c-ai:       #7c3aed;
+  --c-aidev:    #be185d;
+  --c-arch:     #0369a1;
+  --c-mobile:   #4338ca;
+  --c-design:   #c2410c;
+  --c-tools:    #475569;
+  --c-admin:    #0f766e;
   --tag-text: #3a3a48;
   --btn-primary-bg: #18181b;
   --btn-primary-text: #fafafa;
@@ -46,6 +59,18 @@
   --card: #18181b;
   --card-border: #2d2d30;
   --tag-bg: #27272a;
+
+  /* Skill category accents — dark theme (lightened for contrast on --bg) */
+  --c-frontend: #93c5fd;
+  --c-backend:  #6ee7b7;
+  --c-cloud:    #fcd34d;
+  --c-ai:       #c4b5fd;
+  --c-aidev:    #f9a8d4;
+  --c-arch:     #7dd3fc;
+  --c-mobile:   #a5b4fc;
+  --c-design:   #fdba74;
+  --c-tools:    #cbd5e1;
+  --c-admin:    #5eead4;
   --tag-text: #b4b4be;
   --btn-primary-bg: #fafafa;
   --btn-primary-text: #18181b;
@@ -366,8 +391,40 @@ body {
 /* ── TECH STACK ── */
 .stack-group { margin-bottom: 18px; }
 .stack-group:last-child { margin-bottom: 0; }
-.stack-cat { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 9px; letter-spacing: 0.01em; }
+.stack-cat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 9px;
+  letter-spacing: 0.01em;
+}
+.stack-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  color: var(--cat, var(--muted));
+  background: color-mix(in srgb, var(--cat, var(--muted)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cat, var(--muted)) 22%, transparent);
+}
+.stack-icon svg { width: 13px; height: 13px; }
+
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Tags inherit their group's accent as a tint; text stays --muted for contrast. */
+.stack-group .tag {
+  background: color-mix(in srgb, var(--cat, var(--muted)) 7%, var(--tag-bg));
+  border-color: color-mix(in srgb, var(--cat, var(--muted)) 18%, transparent);
+}
+.stack-group .tag:hover {
+  border-color: color-mix(in srgb, var(--cat, var(--muted)) 42%, transparent);
+  color: var(--text);
+}
 
 /* ── VIEW ALL BUTTON ── */
 .view-all-btn {
@@ -729,8 +786,45 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.page-enter {
-  animation: fadeSlideUp 0.7s cubic-bezier(.22,1,.36,1) both;
+/* ── OPENING SEQUENCE ──
+   First paint only. Elements arrive in reading order, each starting
+   before the previous settles, so it reads as one movement. */
+.page-enter { animation: pageIn 0.5s cubic-bezier(.22,1,.36,1) both; }
+
+@keyframes pageIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes introRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter .profile-photo,
+.page-enter .profile-info > *,
+.page-enter .right-col > * {
+  animation: introRise 0.55s cubic-bezier(.22,1,.36,1) both;
+}
+
+.page-enter .profile-photo      { animation-delay: 0.04s; }
+.page-enter .profile-name       { animation-delay: 0.10s; }
+.page-enter .profile-email      { animation-delay: 0.14s; }
+.page-enter .profile-location   { animation-delay: 0.18s; }
+.page-enter .profile-tagline    { animation-delay: 0.22s; }
+.page-enter .degree-chip        { animation-delay: 0.26s; }
+.page-enter .action-row         { animation-delay: 0.30s; }
+.page-enter .right-col > *      { animation-delay: 0.34s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .page-enter .profile-photo,
+  .page-enter .profile-info > *,
+  .page-enter .right-col > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── RESPONSIVE ── */
