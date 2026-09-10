@@ -23,13 +23,6 @@ const EXPERIENCE = [
         desc: 'Processed and organized 500+ student academic records with strict confidentiality protocols, supported enrollment system updates and document verification during peak registration, digitized physical records to improve retrieval efficiency, and provided technical assistance for system and file management concerns.',
         tags: ['Records Management', 'Digitization', 'IT Support'],
     },
-    {
-        role: 'BS Computer Science',
-        org: 'Immaculate Conception College of Balayan, Inc.',
-        period: 'Apr 2026',
-        desc: 'Graduated Magna Cum Laude.',
-        tags: ['Magna Cum Laude'],
-    },
 ];
 
 export function Experience() {

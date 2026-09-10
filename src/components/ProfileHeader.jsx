@@ -21,16 +21,30 @@ export function ProfileHeader() {
             </div>
 
             <div className="profile-info">
-                <div className="profile-name">Prince Arvee F. Avena</div>
-                <div className="profile-email">princearveeavena@gmail.com</div>
-                <div className="profile-location">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                        <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    Balayan, Batangas, Philippines
+                <div className="profile-status">
+                    <span className="status-dot" />
+                    Available for full-stack roles
                 </div>
+
+                <div className="profile-name">Prince Arvee F. Avena</div>
                 <div className="profile-tagline">Full-Stack Developer · Web · DevOps · AI</div>
+
+                <div className="profile-meta">
+                    <a className="meta-chip" href="mailto:princearveeavena@gmail.com">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2" />
+                            <polyline points="3,5 12,13 21,5" />
+                        </svg>
+                        princearveeavena@gmail.com
+                    </a>
+                    <span className="meta-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        Balayan, Batangas
+                    </span>
+                </div>
 
                 <div className="degree-chip">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
