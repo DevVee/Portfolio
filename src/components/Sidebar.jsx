@@ -2,10 +2,16 @@ import React from 'react';
 
 const EXPERIENCE = [
     {
+        role: 'Full-Stack Developer',
+        org: 'ServiceCo Pte. Ltd. · Independent Contractor',
+        year: 'Jun 2026 – Now',
+        active: true,
+    },
+    {
         role: 'Freelance Web Developer',
         org: 'Self-Employed',
-        year: '2025–Now',
-        active: true,
+        year: '2025 – Jun 2026',
+        active: false,
     },
     {
         role: 'Student Intern (OJT)',
