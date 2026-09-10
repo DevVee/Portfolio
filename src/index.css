@@ -1271,3 +1271,195 @@ select:focus-visible,
     border-radius: 8px;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   BENTO LAYOUT
+   Modular tiles on a 4-column grid, spans varied by content weight.
+   Neutral surfaces and restrained motion: the structure carries the
+   design, not decoration.
+   ══════════════════════════════════════════════════════════════════ */
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.tile {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+/* Only tiles that actually go somewhere get lift + pointer. */
+a.tile { text-decoration: none; color: inherit; }
+a.tile:hover,
+.tile-interactive:hover {
+  transform: translateY(-3px);
+  border-color: var(--muted2);
+  box-shadow: var(--shadow-md);
+}
+a.tile:active,
+.tile-interactive:active {
+  transform: translateY(-1px);
+  transition-duration: var(--dur-press);
+}
+
+/* Spans */
+.tile-1 { grid-column: span 1; }
+.tile-2 { grid-column: span 2; }
+.tile-3 { grid-column: span 3; }
+.tile-4 { grid-column: span 4; }
+
+/* Identity tile: the one place type is allowed to get large. */
+.tile-identity {
+  grid-column: span 2;
+  grid-row: span 2;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Small stat tiles */
+.tile-stat { justify-content: center; gap: var(--space-1); }
+.stat-value {
+  font-size: var(--step-3);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  line-height: var(--lead-tight);
+  color: var(--text);
+}
+.stat-label {
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat-accent { color: var(--accent); }
+
+/* Tile headings */
+.tile-label {
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--space-3);
+}
+
+.tile-title {
+  font-size: var(--step-1);
+  font-weight: 700;
+  letter-spacing: var(--track-snug);
+  line-height: var(--lead-snug);
+  color: var(--text);
+}
+.tile-sub {
+  font-size: var(--step-0);
+  color: var(--muted);
+  font-weight: 500;
+}
+.tile-body {
+  font-size: var(--step-0);
+  color: var(--text2);
+  line-height: var(--lead-body);
+  font-weight: 450;
+}
+
+/* A live-status dot, used on the availability tile */
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.status-row { display: flex; align-items: center; gap: var(--space-2); }
+
+@media (max-width: 900px) {
+  .bento { grid-template-columns: repeat(2, 1fr); }
+  .tile-3, .tile-4 { grid-column: span 2; }
+  .tile-identity { grid-column: span 2; grid-row: auto; }
+}
+
+@media (max-width: 560px) {
+  .bento { grid-template-columns: 1fr; gap: var(--space-2); }
+  .tile-1, .tile-2, .tile-3, .tile-4, .tile-identity { grid-column: span 1; }
+  .tile { padding: var(--space-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.tile:hover, .tile-interactive:hover,
+  a.tile:active, .tile-interactive:active { transform: none; }
+}
+
+/* ── IDENTITY TILE ── */
+.identity-top { display: flex; gap: var(--space-4); align-items: flex-start; }
+
+.identity-photo {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+}
+.identity-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.identity-name {
+  font-size: var(--step-3);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  line-height: var(--lead-tight);
+  color: var(--text);
+  margin-bottom: var(--space-1);
+}
+.identity-role {
+  font-size: var(--step-1);
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: var(--track-snug);
+}
+.identity-meta {
+  font-size: var(--step-0);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.identity-contact { margin-top: var(--space-4); }
+.identity-location {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--step-0);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.identity-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 560px) {
+  .identity-photo { width: 64px; height: 64px; }
+  .identity-name { font-size: var(--step-2); }
+}
+
+.tile-title-mono {
+  font-family: 'Space Grotesk', ui-monospace, monospace;
+  font-size: var(--step-0);
+  word-break: break-all;
+}
