@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useReveal } from '../hooks/useReveal';
-import { BRAND, brandColor } from '../lib/brandIcons';
+import { BRAND, GLYPH, brandColor } from '../lib/brandIcons';
 
 const STACK = [
     {
@@ -83,27 +83,36 @@ const PREVIEW_COUNT = 3;
 
 function AnimatedTag({ children, delay }) {
     const icon = BRAND[children];
+    const glyph = icon ? null : GLYPH[children];
     const color = brandColor(icon);
 
     return (
         <span
-            className={`tag${icon ? ' tag-branded' : ''}`}
+            className={`tag${icon || glyph ? ' tag-branded' : ''}`}
             style={{
                 animationDelay: `${delay}ms`,
                 animationFillMode: 'both',
                 ...(color ? { '--brand': color } : null),
             }}
         >
-            {icon && (
-                <svg
-                    className="tag-mark"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                >
+            {icon ? (
+                <svg className="tag-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d={icon.path} />
                 </svg>
-            )}
+            ) : glyph ? (
+                <svg
+                    className="tag-mark tag-glyph"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d={glyph} />
+                </svg>
+            ) : null}
             {children}
         </span>
     );
