@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { BRAND, brandColor } from '../lib/brandIcons';
 
 /* Lucide-style icons, 1.75 stroke, sized by the parent. */
 const ICONS = {
@@ -105,11 +106,28 @@ const STACK = [
 const PREVIEW_COUNT = 3;
 
 function AnimatedTag({ children, delay }) {
+    const icon = BRAND[children];
+    const color = brandColor(icon);
+
     return (
         <span
-            className="tag"
-            style={{ animationDelay: `${delay}ms`, animationFillMode: 'both' }}
+            className={`tag${icon ? ' tag-branded' : ''}`}
+            style={{
+                animationDelay: `${delay}ms`,
+                animationFillMode: 'both',
+                ...(color ? { '--brand': color } : null),
+            }}
         >
+            {icon && (
+                <svg
+                    className="tag-mark"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                >
+                    <path d={icon.path} />
+                </svg>
+            )}
             {children}
         </span>
     );

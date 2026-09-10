@@ -426,6 +426,23 @@ body {
   color: var(--text);
 }
 
+/* ── BRAND MARKS ──
+   The mark carries the brand colour; the label stays on --tag-text so
+   contrast never depends on a brand's palette. Marks that are near-black or
+   near-white resolve to no --brand and inherit the category accent instead. */
+.tag-mark {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  color: var(--brand, var(--cat, var(--muted)));
+  transition: transform 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.tag-branded:hover .tag-mark { transform: scale(1.12); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tag-branded:hover .tag-mark { transform: none; }
+}
+
 /* ── VIEW ALL BUTTON ── */
 .view-all-btn {
   font-size: 12.5px;
@@ -443,6 +460,9 @@ body {
 }
 
 .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--tag-bg);
   color: var(--tag-text);
   border-radius: 6px;
