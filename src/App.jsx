@@ -5,7 +5,7 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { ProfileHeader } from './components/ProfileHeader';
 import { About } from './components/About';
 import { TechStack } from './components/TechStack';
-import { OJTHighlights } from './components/OJTHighlights';
+import { Experience } from './components/Experience';
 import { ProjectsCerts } from './components/ProjectsCerts';
 // import { Gallery } from './components/Gallery'; // Certifications hidden — files kept
 import { FooterGrid } from './components/FooterGrid';
@@ -26,8 +26,8 @@ function App() {
           <div className="left-col">
             <ProfileHeader />
             <About />
+            <Experience />
             <TechStack />
-            <OJTHighlights />
             <ProjectsCerts />
             {/* <Gallery /> — Certifications hidden, files kept in /public/certificates/ */}
             <FooterGrid />

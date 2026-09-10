@@ -9,14 +9,16 @@ export function About() {
             <div className="sec-title" style={{ marginBottom: '16px' }}>About</div>
             <div className="about-body">
                 <p>
-                    Computer Science graduate with hands-on experience delivering web and mobile applications,
-                    business systems, and technology-driven solutions. Skilled in problem-solving, project
-                    execution, and adapting to new challenges in fast-paced environments.
+                    Full-stack developer building production web and mobile applications end to end — React
+                    and Next.js on the front, Node and PHP services over PostgreSQL on the back, deployed to
+                    AWS on containerized infrastructure. Comfortable owning a feature from schema design
+                    through CI/CD to a live deployment.
                 </p>
                 <p>
-                    Recognized for strong communication, organization, and attention to detail, with the
-                    ability to work independently or collaboratively to achieve goals. Committed to continuous
-                    learning, professional growth, and delivering high-quality results.
+                    Recent work spans typed pnpm monorepos shared across web and React Native, ECS/Fargate
+                    deployments driven by OIDC-authenticated GitHub Actions, and LLM-backed retrieval over
+                    pgvector. Computer Science graduate, Magna Cum Laude, with a bias toward shipping
+                    maintainable systems and learning whatever the problem needs.
                 </p>
             </div>
         </div>

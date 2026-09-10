@@ -30,7 +30,7 @@ export function ProfileHeader() {
                     </svg>
                     Balayan, Batangas, Philippines
                 </div>
-                <div className="profile-tagline">Freelance Web Developer · CS Graduate · Magna Cum Laude</div>
+                <div className="profile-tagline">Full-Stack Developer · React · Next.js · AWS</div>
 
                 <div className="degree-chip">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

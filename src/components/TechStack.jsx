@@ -5,23 +5,50 @@ const STACK = [
     {
         cat: 'Frontend Development',
         tags: [
-            'React.js', 'Next.js', 'TypeScript', 'JavaScript', 'HTML', 'CSS',
+            'React 19', 'Next.js (App Router)', 'TypeScript', 'JavaScript', 'HTML', 'CSS',
             'Tailwind CSS', 'Bootstrap', 'SCSS', 'Vite', 'shadcn/ui', 'Radix UI',
             'Framer Motion', 'React Router DOM', 'Three.js', 'React Hook Form',
             'Zod', 'TanStack React Query', 'Zustand', 'Recharts', 'Leaflet', 'ESLint',
         ],
     },
     {
-        cat: 'Backend & Cloud',
+        cat: 'Backend & Databases',
         tags: [
-            'Supabase', 'PostgreSQL', 'SQL', 'PHP', 'Laravel', 'Node.js',
-            'Express.js', 'Socket.io', 'Docker', 'Nginx', 'Vercel',
-            'Resend API', 'Groq API', 'Axios', 'JWT', 'OAuth', 'REST', 'SQLite',
+            'Node.js', 'Express.js', 'Next.js API Routes', 'PHP', 'Laravel',
+            'PostgreSQL', 'pgvector', 'MySQL', 'SQLite', 'SQL', 'Supabase',
+            'Database Migrations', 'REST APIs', 'JWT', 'OAuth', 'Socket.io', 'Axios',
+        ],
+    },
+    {
+        cat: 'Cloud & DevOps',
+        tags: [
+            'AWS', 'ECS / Fargate', 'RDS / Aurora', 'Amazon S3', 'ECR',
+            'AWS Secrets Manager', 'CloudWatch', 'Amazon SES', 'AWS CDK', 'Terraform',
+            'Docker (multi-stage)', 'Docker Compose', 'GitHub Actions', 'CI/CD',
+            'OIDC Deployments', 'Nginx', 'Vercel',
+        ],
+    },
+    {
+        cat: 'AI & Integrations',
+        tags: [
+            'AWS Bedrock', 'LLM Integration', 'RAG Pipelines',
+            'Vector Embeddings', 'Groq API', 'Resend API',
+        ],
+    },
+    {
+        cat: 'Architecture & Practices',
+        tags: [
+            'pnpm Monorepos', 'Shared Type Packages', 'Typed API Contracts',
+            'CI Quality Gates', 'Automated Testing', 'Jest', 'Code Review',
+            'Audit Logging', 'Role-Based Access Control', 'Git Workflow',
         ],
     },
     {
         cat: 'Mobile Development',
-        tags: ['React Native', 'Expo', 'Capacitor (Android)'],
+        tags: [
+            'React Native', 'Expo', 'Expo EAS Build', 'EAS Update',
+            'App Store / Play Store Releases', 'Capacitor (Android)',
+        ],
     },
     {
         cat: 'Design & Creative',
