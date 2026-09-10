@@ -82,12 +82,29 @@ body {
 /* ── SCROLL REVEAL ── */
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.65s cubic-bezier(.22,1,.36,1), transform 0.65s cubic-bezier(.22,1,.36,1);
+  transform: translateY(18px);
+  transition: opacity 0.45s cubic-bezier(.22,1,.36,1), transform 0.45s cubic-bezier(.22,1,.36,1);
 }
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Reduced motion: keep the fade, drop the travel and any springy easing */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transform: none;
+    transition: opacity 0.2s ease;
+  }
+  .reveal.visible { transform: none; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { transition-duration: 0.2s !important; }
 }
 
 /* ── THEME TOGGLE ── */
@@ -476,6 +493,26 @@ body {
 }
 .proj-links a:hover { color: var(--text); }
 .proj-links svg { flex-shrink: 0; }
+/* WCAG 2.2 target size: keep the hit area at 24px even though the text is smaller */
+.proj-links a { min-height: 24px; }
+
+/* ── PRESS FEEDBACK ──
+   Acknowledge on pointer-down, not on release. Fast in, slower out. */
+.btn:active,
+.view-all-btn:active,
+.theme-toggle:active {
+  transform: scale(0.97);
+  transition-duration: 0.06s;
+}
+.proj-card:active { transform: translateY(-2px) scale(0.995); transition-duration: 0.06s; }
+.proj-links a:active { opacity: 0.6; transition-duration: 0.06s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  .view-all-btn:active,
+  .theme-toggle:active,
+  .proj-card:active { transform: none; }
+}
 
 /* ── CERTS / PROJECTS LIST ── */
 .cert-list { display: flex; flex-direction: column; gap: 2px; }
