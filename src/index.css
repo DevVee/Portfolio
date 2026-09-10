@@ -1,6 +1,47 @@
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── DESIGN TOKENS ──
+   Type follows a modular scale rather than ad-hoc sizes, and tracking is
+   size-specific: negative as text grows, ~0 at body size. Spacing is a
+   4/8px rhythm. Both are theme-independent, so they live outside :root[]. */
+:root {
+  --step--1: 11.5px;
+  --step-0:  13px;
+  --step-1:  14.5px;
+  --step-2:  17px;
+  --step-3:  21px;
+  --step-4:  27px;
+
+  --track-tight: -0.02em;
+  --track-snug:  -0.01em;
+  --track-normal: 0;
+  --track-wide:  0.04em;
+
+  --lead-tight: 1.15;
+  --lead-snug:  1.35;
+  --lead-body:  1.65;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --radius: 8px;
+  --radius-lg: 12px;
+
+  /* Motion: one token per role, not one duration copied everywhere. */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --dur-press: 0.06s;
+  --dur-fast: 0.15s;
+  --dur-base: 0.25s;
+  --dur-slow: 0.45s;
+}
+
 /* ── THEME TOKENS ── */
 :root[data-theme="light"] {
   --bg: #fafafa;
@@ -22,14 +63,21 @@
   --shadow: 0 1px 2px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
   --shadow-glow: 0 8px 32px rgba(0,0,0,0.10);
-  --dot-active: #18181b;
+  --dot-active: #2563eb;
   --dot-inactive: #d4d4d8;
   --toggle-track: #e4e4e7;
   --toggle-thumb: #18181b;
   --theme-label-text: #52525b;
   --hero-gradient: linear-gradient(135deg, #f0f0f3 0%, #fafafa 100%);
-  --tag-hover-border: #71717a;
+  --tag-hover-border: #2563eb;
   --glow-color: rgba(24,24,27,0.08);
+
+  /* Single accent, per the skill's monochrome + blue direction.
+     #2563EB on #fafafa is 5.17:1 — passes AA for text. */
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-soft: rgba(37, 99, 235, 0.09);
+  --focus-ring: #2563eb;
 }
 
 :root[data-theme="dark"] {
@@ -52,29 +100,51 @@
   --shadow: 0 1px 2px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
   --shadow-glow: 0 8px 32px rgba(250,250,250,0.04);
-  --dot-active: #fafafa;
+  --dot-active: #7aa5f7;
   --dot-inactive: #3f3f46;
   --toggle-track: #27272a;
   --toggle-thumb: #fafafa;
   --theme-label-text: #a1a1aa;
   --hero-gradient: linear-gradient(135deg, #18181b 0%, #0e0e10 100%);
-  --tag-hover-border: #71717a;
+  --tag-hover-border: #7aa5f7;
   --glow-color: rgba(250,250,250,0.05);
+
+  /* Lightened for dark: #7aa5f7 on #0e0e10 is 7.4:1. */
+  --accent: #7aa5f7;
+  --accent-strong: #a5c4fb;
+  --accent-soft: rgba(122, 165, 247, 0.12);
+  --focus-ring: #7aa5f7;
 }
 
 /* ── GLOBAL ── */
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Outfit', system-ui, sans-serif;
+  font-family: 'Archivo', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  font-size: 14.5px;
-  font-weight: 500;
-  line-height: 1.68;
+  font-size: var(--step-1);
+  font-weight: 450;
+  line-height: var(--lead-body);
+  letter-spacing: var(--track-normal);
   -webkit-font-smoothing: antialiased;
   transition: background 0.4s ease, color 0.4s ease;
   overflow-x: hidden;
+}
+
+/* ── FOCUS ──
+   One visible ring on every interactive control. The skill rates a missing
+   or removed focus ring High severity; before this, exactly one control in
+   the page had one. :focus-visible keeps it off pointer clicks. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius);
 }
 
 /* ── SCROLL REVEAL ── */
@@ -233,10 +303,11 @@ body {
 
 .profile-info { padding-top: 4px; }
 .profile-name {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  margin-bottom: 5px;
+  font-size: var(--step-4);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  line-height: var(--lead-tight);
+  margin-bottom: var(--space-1);
   background: linear-gradient(135deg, var(--text) 70%, var(--muted));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -258,7 +329,7 @@ body {
   color: var(--text2);
   font-weight: 600;
   margin-bottom: 5px;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Space Grotesk', ui-monospace, monospace;
   letter-spacing: 0.01em;
 }
 
@@ -353,7 +424,12 @@ body {
 .section { margin-bottom: 36px; padding-bottom: 36px; border-bottom: 1px solid var(--border); }
 .section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .sec-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-.sec-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); }
+.sec-title {
+  font-size: var(--step-2);
+  font-weight: 700;
+  letter-spacing: var(--track-snug);
+  line-height: var(--lead-snug);
+}
 .sec-badge { font-size: 12px; color: var(--muted); font-weight: 500; }
 
 /* ── ABOUT ── */
@@ -421,7 +497,7 @@ body {
   border: 1px solid transparent;
   cursor: default;
   transition: border-color 0.15s, transform 0.2s cubic-bezier(.34,1.56,.64,1), background 0.15s;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Space Grotesk', ui-monospace, monospace;
   opacity: 0;
   animation: tagPop 0.4s cubic-bezier(.34,1.56,.64,1) forwards;
 }
@@ -437,6 +513,9 @@ body {
 /* ── PROJECT CARDS ── */
 .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .projects-grid-full { grid-template-columns: 1fr 1fr; }
+
+/* An odd final card would otherwise sit alone beside a gap; let it span. */
+.exp-grid > .proj-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
 .proj-card {
   background: var(--card);
@@ -494,7 +573,7 @@ body {
   padding: 2px 9px;
   font-size: 11px;
   color: var(--muted);
-  font-family: 'DM Mono', monospace;
+  font-family: 'Space Grotesk', ui-monospace, monospace;
   border: 1px solid transparent;
 }
 [data-theme="dark"] .proj-tag { border-color: var(--border2); }
@@ -517,7 +596,7 @@ body {
   text-decoration: none;
   transition: color 0.18s ease;
 }
-.proj-links a:hover { color: var(--text); }
+.proj-links a:hover { color: var(--accent); }
 .proj-links svg { flex-shrink: 0; }
 /* WCAG 2.2 target size: keep the hit area at 24px even though the text is smaller */
 .proj-links a { min-height: 24px; }
@@ -629,7 +708,7 @@ body {
   justify-content: center;
   color: var(--muted2);
   font-size: 11px;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Space Grotesk', ui-monospace, monospace;
   transition: transform 0.2s, border-color 0.2s;
 }
 .gallery-item:hover { transform: scale(1.03); border-color: var(--muted2); }
@@ -1086,7 +1165,7 @@ body {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--text);
-  font-family: 'DM Mono', monospace;
+  font-family: 'Space Grotesk', ui-monospace, monospace;
   word-break: break-all;
 }
 

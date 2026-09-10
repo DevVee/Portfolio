@@ -34,7 +34,7 @@ export function Experience() {
                 <div className="sec-title">Experience</div>
                 <span className="sec-badge">{EXPERIENCE.length} roles</span>
             </div>
-            <div className="projects-grid projects-grid-full">
+            <div className="projects-grid projects-grid-full exp-grid">
                 {EXPERIENCE.map((e, i) => (
                     <div
                         className="proj-card"
