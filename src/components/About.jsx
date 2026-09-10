@@ -9,16 +9,26 @@ export function About() {
             <div className="sec-title" style={{ marginBottom: '16px' }}>About</div>
             <div className="about-body">
                 <p>
-                    Full-stack developer building production web and mobile applications end to end. React
-                    and Next.js on the front, Node and PHP services over PostgreSQL on the back, deployed to
-                    AWS on containerized infrastructure. Comfortable owning a feature from schema design
-                    through CI/CD to a live deployment.
+                    I build web and mobile apps end to end. That usually means React or Next.js on the
+                    front, an API and database behind it, and getting the whole thing deployed and running
+                    on AWS. I like owning a feature from the first sketch of the database to the day it
+                    goes live.
                 </p>
                 <p>
-                    Recent work spans typed pnpm monorepos shared across web and React Native, ECS/Fargate
-                    deployments driven by OIDC-authenticated GitHub Actions, and LLM-backed retrieval over
-                    pgvector. Computer Science graduate, Magna Cum Laude, with a bias toward shipping
-                    maintainable systems and learning whatever the problem needs.
+                    At ServiceCo I work on a platform where the website and the mobile app share one
+                    codebase, so a fix lands in both at once. Day to day that means dashboards the
+                    operations team runs the business from, in-app chat, the onboarding flow new customers
+                    go through, and the database and APIs underneath it all. I also added an AI assistant
+                    that answers questions from the company's own data, and I handle the deployments.
+                </p>
+                <p>
+                    Before that I spent a year building systems for small businesses and schools around
+                    Batangas, working straight with the owners: a point-of-sale with a matching mobile app,
+                    a payroll platform that handles SSS, PhilHealth, Pag-IBIG and BIR correctly, and
+                    clinic record systems.
+                </p>
+                <p>
+                    Computer Science graduate, Magna Cum Laude. Happy to pick up whatever a project needs.
                 </p>
             </div>
         </div>
