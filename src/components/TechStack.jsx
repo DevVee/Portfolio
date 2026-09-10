@@ -1,27 +1,64 @@
 import React, { useState } from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { BRAND, GLYPH, brandColor } from '../lib/brandIcons';
 
 const STACK = [
     {
         cat: 'Frontend Development',
         tags: [
-            'React.js', 'Next.js', 'TypeScript', 'JavaScript', 'HTML', 'CSS',
+            'React 19', 'Next.js (App Router)', 'TypeScript', 'JavaScript', 'HTML', 'CSS',
             'Tailwind CSS', 'Bootstrap', 'SCSS', 'Vite', 'shadcn/ui', 'Radix UI',
             'Framer Motion', 'React Router DOM', 'Three.js', 'React Hook Form',
             'Zod', 'TanStack React Query', 'Zustand', 'Recharts', 'Leaflet', 'ESLint',
         ],
     },
     {
-        cat: 'Backend & Cloud',
+        cat: 'Backend & Databases',
         tags: [
-            'Supabase', 'PostgreSQL', 'SQL', 'PHP', 'Laravel', 'Node.js',
-            'Express.js', 'Socket.io', 'Docker', 'Nginx', 'Vercel',
-            'Resend API', 'Groq API', 'Axios', 'JWT', 'OAuth', 'REST', 'SQLite',
+            'Node.js', 'Express.js', 'Next.js API Routes', 'PHP', 'Laravel',
+            'PostgreSQL', 'pgvector', 'MySQL', 'SQLite', 'SQL', 'Supabase',
+            'Database Migrations', 'REST APIs', 'JWT', 'OAuth', 'Socket.io', 'Axios',
+        ],
+    },
+    {
+        cat: 'Cloud & DevOps',
+        tags: [
+            'AWS', 'ECS / Fargate', 'RDS / Aurora', 'Amazon S3', 'ECR',
+            'AWS Secrets Manager', 'CloudWatch', 'Amazon SES', 'AWS CDK', 'Terraform',
+            'Docker (multi-stage)', 'Docker Compose', 'GitHub Actions', 'CI/CD',
+            'OIDC Deployments', 'Nginx', 'Vercel',
+        ],
+    },
+    {
+        cat: 'AI Engineering',
+        tags: [
+            'AWS Bedrock', 'LLM Integration', 'RAG Pipelines',
+            'Vector Embeddings', 'Prompt Engineering', 'MCP (Model Context Protocol)',
+            'Groq API', 'OpenAI API', 'Anthropic API', 'Resend API',
+        ],
+    },
+    {
+        cat: 'AI-Assisted Development',
+        tags: [
+            'Claude Code', 'Cursor', 'OpenAI Codex', 'GitHub Copilot',
+            'Claude', 'ChatGPT', 'Gemini', 'v0', 'Agentic Workflows',
+            'AI Code Review', 'AI Pair Programming',
+        ],
+    },
+    {
+        cat: 'Architecture & Practices',
+        tags: [
+            'pnpm Monorepos', 'Shared Type Packages', 'Typed API Contracts',
+            'CI Quality Gates', 'Automated Testing', 'Jest', 'Code Review',
+            'Audit Logging', 'Role-Based Access Control', 'Git Workflow',
         ],
     },
     {
         cat: 'Mobile Development',
-        tags: ['React Native', 'Expo', 'Capacitor (Android)'],
+        tags: [
+            'React Native', 'Expo', 'Expo EAS Build', 'EAS Update',
+            'App Store / Play Store Releases', 'Capacitor (Android)',
+        ],
     },
     {
         cat: 'Design & Creative',
@@ -45,11 +82,37 @@ const STACK = [
 const PREVIEW_COUNT = 3;
 
 function AnimatedTag({ children, delay }) {
+    const icon = BRAND[children];
+    const glyph = icon ? null : GLYPH[children];
+    const color = brandColor(icon);
+
     return (
         <span
-            className="tag"
-            style={{ animationDelay: `${delay}ms`, animationFillMode: 'both' }}
+            className={`tag${icon || glyph ? ' tag-branded' : ''}`}
+            style={{
+                animationDelay: `${delay}ms`,
+                animationFillMode: 'both',
+                ...(color ? { '--brand': color } : null),
+            }}
         >
+            {icon ? (
+                <svg className="tag-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d={icon.path} />
+                </svg>
+            ) : glyph ? (
+                <svg
+                    className="tag-mark tag-glyph"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d={glyph} />
+                </svg>
+            ) : null}
             {children}
         </span>
     );
