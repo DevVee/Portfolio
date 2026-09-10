@@ -21,11 +21,6 @@ export function ProfileHeader() {
             </div>
 
             <div className="profile-info">
-                <div className="profile-status">
-                    <span className="status-dot" />
-                    Available for full-stack roles
-                </div>
-
                 <div className="profile-name">Prince Arvee F. Avena</div>
                 <div className="profile-tagline">Full-Stack Developer · Web · DevOps · AI</div>
 
