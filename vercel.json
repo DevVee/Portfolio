@@ -3,7 +3,6 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "outputDirectory": "dist",
-  "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
     {
@@ -34,7 +33,7 @@
       ]
     },
     {
-      "source": "/landing",
+      "source": "/landing(.html)?",
       "headers": [
         {
           "key": "X-Robots-Tag",
@@ -45,8 +44,12 @@
   ],
   "rewrites": [
     {
-      "source": "/google6186f0b502d51cf0.html",
-      "destination": "/google-site-verification.txt"
+      "source": "/landing",
+      "destination": "/landing.html"
+    },
+    {
+      "source": "/projects/:page",
+      "destination": "/projects/:page.html"
     }
   ]
 }
