@@ -6,7 +6,7 @@ export function About() {
 
     return (
         <div className="section reveal" ref={ref}>
-            <div className="sec-title" style={{ marginBottom: '16px' }}>About</div>
+            <h2 className="sec-title" style={{ marginBottom: '16px' }}>About</h2>
             <div className="about-body">
                 <p>
                     I build web and mobile applications end to end. React and Next.js on the front, an API

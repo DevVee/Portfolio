@@ -31,7 +31,7 @@ export function Experience() {
     return (
         <div className="section reveal" ref={ref}>
             <div className="sec-head">
-                <div className="sec-title">Experience</div>
+                <h2 className="sec-title">Experience</h2>
                 <span className="sec-badge">{EXPERIENCE.length} roles</span>
             </div>
             <div className="projects-grid projects-grid-full exp-grid">

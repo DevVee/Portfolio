@@ -12,7 +12,16 @@ export function ProfileHeader() {
     return (
         <div className="profile-header reveal" ref={ref}>
             <div className="profile-photo">
-                <img src="/picture.png" alt="Prince Arvee" onError={e => { e.target.style.display = 'none'; }} />
+                <img
+                    src="/picture-256.webp"
+                    srcSet="/picture-256.webp 256w, /picture-384.webp 384w"
+                    sizes="128px"
+                    width="128"
+                    height="128"
+                    fetchPriority="high"
+                    alt="Prince Arvee Avena"
+                    onError={e => { e.target.style.display = 'none'; }}
+                />
                 <div className="photo-placeholder">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
                         <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
@@ -21,7 +30,7 @@ export function ProfileHeader() {
             </div>
 
             <div className="profile-info">
-                <div className="profile-name">Prince Arvee F. Avena</div>
+                <h1 className="profile-name">Prince Arvee F. Avena</h1>
                 <div className="profile-tagline">Full-Stack Developer · Web · DevOps · AI</div>
 
                 <div className="profile-meta">

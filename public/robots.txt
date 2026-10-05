@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://arveeavena.vercel.app/sitemap.xml

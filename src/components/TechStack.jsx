@@ -127,7 +127,7 @@ export function TechStack() {
     return (
         <div className="section reveal" ref={ref}>
             <div className="sec-head">
-                <div className="sec-title">Skills</div>
+                <h2 className="sec-title">Skills</h2>
             </div>
 
             {visible.map((group, gi) => {

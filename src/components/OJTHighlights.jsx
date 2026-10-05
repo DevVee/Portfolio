@@ -30,7 +30,7 @@ export function OJTHighlights() {
     return (
         <div className="section reveal" ref={ref}>
             <div className="sec-head">
-                <div className="sec-title">OJT Highlights</div>
+                <h2 className="sec-title">OJT Highlights</h2>
                 <span className="sec-badge">2025 – 2026</span>
             </div>
             <div className="projects-grid">

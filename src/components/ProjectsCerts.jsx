@@ -112,7 +112,7 @@ export function ProjectsCerts() {
     return (
         <div className="section reveal" ref={ref}>
             <div className="sec-head" style={{ marginBottom: '16px' }}>
-                <div className="sec-title">Projects</div>
+                <h2 className="sec-title">Projects</h2>
                 <span className="sec-badge">{PROJECTS.length} projects</span>
             </div>
             <div className="projects-grid projects-grid-full">

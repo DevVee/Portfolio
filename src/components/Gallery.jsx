@@ -40,7 +40,7 @@ export function Gallery() {
     return (
         <div className="section reveal" ref={ref}>
             <div className="sec-head">
-                <div className="sec-title">Certifications</div>
+                <h2 className="sec-title">Certifications</h2>
                 <div className="sec-badge">{CERTS.length} certificates</div>
             </div>
 
@@ -155,7 +155,7 @@ export function GalleryImages() {
     return (
         <div className="section reveal" ref={ref}>
             <div className="sec-head">
-                <div className="sec-title">Certifications</div>
+                <h2 className="sec-title">Certifications</h2>
                 <div className="sec-badge">{CERT_FILES.length} certificates</div>
             </div>
             <div className="gallery-outer">
